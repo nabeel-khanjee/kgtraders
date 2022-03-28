@@ -8,6 +8,7 @@ import 'package:radium_tech/Api/Apis.dart';
 import 'package:radium_tech/Global/global.dart';
 import 'package:radium_tech/Model/ResidenceModel/get_image_data.dart';
 import 'package:radium_tech/Model/task_listing_model.dart';
+import 'package:radium_tech/Services/base_url.dart';
 
 import 'apiurl.dart';
 
@@ -60,6 +61,8 @@ class Api {
           await http.get(Uri.parse(baseurl + 'getSurveys/$userid'));
 
       if (response.statusCode == 200) {
+        Surveyor_list.clear();
+        
         print(response.statusCode);
         print(response.body);
         return Welcome.fromJson(jsonDecode(response.body));
@@ -116,8 +119,8 @@ class Api {
     var now = null;
 
     try {
-      final http.Response response =
-          await http.get(Uri.parse(baseurl + "getVerificationImages/$id"));
+      final http.Response response = await http
+          .get(Uri.parse(BaseUrl().url + "/getVerificationImages/$id"));
 
       if (response.statusCode == 200) {
         print(response.statusCode);
@@ -178,7 +181,19 @@ class Api {
     }).catchError(onError);
   }
 
-  static SendApplicantData(id, var name, var fname, var cnic, var dob, var resphone, var workphone, var cell, var address, var landmark, var longitude, var latitude) {
+  static SendApplicantData(
+      id,
+      var name,
+      var fname,
+      var cnic,
+      var dob,
+      var resphone,
+      var workphone,
+      var cell,
+      var address,
+      var landmark,
+      var longitude,
+      var latitude) {
     success = "false";
     Dio dio = new Dio();
 
@@ -221,7 +236,25 @@ class Api {
     }).catchError(onError);
   }
 
-  static SendResidentData(id, var available, var correct, var livehere, var livingsince, var nameplate, var residencetype, var residenceis, var utilization, var residencearea, var areaunit, var areadetail, var residencecondition, var areacondition, var neighborhood, var areaaccessibility, var belongsto, var repossession) {
+  static SendResidentData(
+      id,
+      var available,
+      var correct,
+      var livehere,
+      var livingsince,
+      var nameplate,
+      var residencetype,
+      var residenceis,
+      var utilization,
+      var residencearea,
+      var areaunit,
+      var areadetail,
+      var residencecondition,
+      var areacondition,
+      var neighborhood,
+      var areaaccessibility,
+      var belongsto,
+      var repossession) {
     success = "false";
     Dio dio = new Dio();
 
@@ -352,7 +385,6 @@ class Api {
               knowsApplicant: i['knows_applicant'],
               knowsSince: i['knows_since'],
               comments: i['comments'],
-
             ));
           }
 
@@ -362,15 +394,21 @@ class Api {
           success = "error";
           print('error');
         }
-     }
-      else {
+      } else {
         success = "error";
         throw Exception('Failed to Fetch data');
       }
     }).catchError(onError);
   }
 
-  static SendNeighboroneData(id, var name, var address, var knowsApplicant, var since, var comments, ) {
+  static SendNeighboroneData(
+    id,
+    var name,
+    var address,
+    var knowsApplicant,
+    var since,
+    var comments,
+  ) {
     success = "false";
     Dio dio = new Dio();
 
@@ -381,7 +419,6 @@ class Api {
       'knows_applicant': knowsApplicant.toString(),
       'knows_since': since.toString(),
       'comments': comments.toString(),
-
     });
 
     dio
@@ -407,7 +444,6 @@ class Api {
       }
     }).catchError(onError);
   }
-
 
   static GetNeighbortwo(id) {
     success = "false";
@@ -436,7 +472,6 @@ class Api {
               knowsApplicant: i['knows_applicant'],
               knowsSince: i['knows_since'],
               comments: i['comments'],
-
             ));
           }
 
@@ -453,7 +488,14 @@ class Api {
     }).catchError(onError);
   }
 
-  static SendNeighbortwoData(id, var name, var address, var knowsApplicant, var since, var comments, ) {
+  static SendNeighbortwoData(
+    id,
+    var name,
+    var address,
+    var knowsApplicant,
+    var since,
+    var comments,
+  ) {
     success = "false";
     Dio dio = new Dio();
 
@@ -464,7 +506,6 @@ class Api {
       'knows_applicant': knowsApplicant.toString(),
       'knows_since': since.toString(),
       'comments': comments.toString(),
-
     });
 
     dio
@@ -491,11 +532,10 @@ class Api {
     }).catchError(onError);
   }
 
-
   static GetSorveyorResult(id) {
     success = "false";
     Dio dio = Dio();
-    String url = baseurl + "getOutcome/$id";
+    String url = BaseUrl().url + "/getOutcome/$id";
     dio
         .get(
       url,
@@ -518,8 +558,6 @@ class Api {
               reportStatus: i['report_status'],
               comments: i['comments'],
               remarks: i['remarks'],
-
-
             ));
           }
 
@@ -536,7 +574,13 @@ class Api {
     }).catchError(onError);
   }
 
-  static SendSorveyorResult(id, var name, var reportstatus, var comments, var remarks, ) {
+  static SendSorveyorResult(
+    id,
+    var name,
+    var reportstatus,
+    var comments,
+    var remarks,
+  ) {
     success = "false";
     Dio dio = new Dio();
 
@@ -546,8 +590,6 @@ class Api {
       'report_status': reportstatus.toString(),
       'comments': comments.toString(),
       'remarks': remarks.toString(),
-
-
     });
 
     dio
@@ -573,5 +615,4 @@ class Api {
       }
     }).catchError(onError);
   }
-
 }

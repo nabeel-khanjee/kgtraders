@@ -274,7 +274,7 @@ class _MyHomePageResidenceState extends State<MyHomePageResidence> {
                     ],
                   ),
               if (widget.formFormate == "1" )
-                  const SizedBox(height: 20),
+               if(widget.isSalarySlip==1||widget.isHrDetails==1)   const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

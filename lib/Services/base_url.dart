@@ -5,11 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 var changeUrl;
 
 class BaseUrl {
-  var url = "http://192.168.18.65:8000";
+  // var url = 'https://testerp.radiumpk.com';
+  
+  var url = 'http://192.168.18.65:8000';
   setHeaders() => {
         'Content-type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer $token',
+        // "Access-Control-Allow-Origin": "*"
       };
   var token;
 

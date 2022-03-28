@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:radium_tech/Components/backToOptions.dart';
+
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/show_toast.dart';
 import 'package:radium_tech/Components/upper_case.dart';
 import 'package:radium_tech/Model/ResidenceModel/get_residence_data.dart';
@@ -33,7 +36,6 @@ enum IsAddressCorrect { yes, no }
 
 class _ResidenceProfileState extends State<ResidenceProfile> {
   final formKey = GlobalKey<FormBuilderState>();
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   var residenceType = ['House/Bungalow', 'Portion', 'Apartment', 'Others'];
 
@@ -102,8 +104,8 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
   Future<GetResidenceData>? getResidenceData;
   @override
   void initState() {
-   getResidenceData= GetResidenceDetails().getResidenceDetails(
-                  "/getResidenceProfile/${widget.surveyId}");
+    getResidenceData = GetResidenceDetails()
+        .getResidenceDetails("/getResidenceProfile/${widget.surveyId}");
     super.initState();
   }
 
@@ -113,57 +115,53 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
       appBar: AppBar(
         title: Text(widget.applicationTitle),
       ),
-      bottomNavigationBar:  Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          BackToOptions(),
-                          MaterialButton(
-                            onPressed: () async {
-                              formKey.currentState!.save();
-                              if (formKey.currentState!.validate()) {
-                                print(formKey.currentState!.value);
-                                data = formKey.currentState!.value;
-                                var res = await sendResidenceDetails
-                                    .sendResidenceDetails(data,
-                                        '/updateResidenceProfile/${widget.surveyId}');
+      bottomNavigationBar: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          BackToOptions(),
+          MaterialButton(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: appColor)),
+            color: appColor.withOpacity(.5),
+            onPressed: () async {
+              buildShowDialog(context);
+              formKey.currentState!.save();
+              if (formKey.currentState!.validate()) {
+                print(formKey.currentState!.value);
+                data = formKey.currentState!.value;
+                var res = await sendResidenceDetails.sendResidenceDetails(
+                    data, '/updateResidenceProfile/${widget.surveyId}');
 
-                                var body = jsonDecode(res.body);
-                                print(body);
-                                print(widget.surveyId);
-                                if (body['success']) {
-                                  showToastApp();
-                                  Navigator.pop(context);
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => SuccessPage(
-                                  //               surveyId: widget.surveyId,
-                                  //               userId: widget.userId,
-                                  //               userName: widget.userName,
-                                  //             )));
-                                }
-                              } else {
-                                print("validation failed");
-                              }
-                            },
-                       child: Row(
-                         children: [
-                                       Text(
-                              "Submit",
-                              style: TextStyle(color: appColor),
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: appColor,
-                              size: 15,
-                            ),
-                 
-                         ],
-                       ),
-                          ),
-                        ],
-                      ),
-                    
+                var body = jsonDecode(res.body);
+                print(body);
+                print(widget.surveyId);
+                if (body['success']) {
+                  showToastApp();
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  
+                }
+              } else {
+                print("validation failed");
+              }
+            },
+            child: Row(
+              children: [
+                Text(
+                  "Submit",
+                  style: TextStyle(color: textColor),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: textColor,
+                  size: 15,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Form(
           child: FutureBuilder<GetResidenceData>(
@@ -179,9 +177,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                           child: Column(
                             children: <Widget>[
                               FormBuilderRadioGroup(
-                                // validator: FormBuilderValidators.required(
-                                //     context,
-                                //     errorText: "Please Select"),
                                 onChanged: (value) {
                                   setState(() {
                                     isApplicantAvaliable = value;
@@ -202,19 +197,15 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                   FormBuilderFieldOption(value: "No"),
                                 ],
                               ),
-                              if (isApplicantAvaliable == "Yes" ||
-                                  snapshot.data!.data![0]
-                                          .applicant_is_avaliable ==
-                                      "Yes")
-                                Column(
+                              Visibility(
+                                visible: chechIsApplicantAvaliable1(snapshot
+                                    .data!.data![0].applicant_is_avaliable),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
                                     ),
                                     FormBuilderRadioGroup(
-                                      // validator: FormBuilderValidators.required(
-                                      //     context,
-                                      //     errorText: "Please Select"),
                                       name: "original_nic_seen",
                                       decoration: inputDecoration(
                                           "Orignal Cnic Seen", ""),
@@ -242,21 +233,14 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         ],
                                         decoration: inputDecoration(
                                             "CNIC of Applicant", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.phone),
                                   ],
                                 ),
-                              if (isApplicantAvaliable == "No" ||
-                                  snapshot.data!.data![0]
-                                          .applicant_is_avaliable ==
-                                      "No")
-                                Column(
+                              ),
+                              Visibility(
+                                visible: chechIsApplicantAvaliable2(snapshot
+                                    .data!.data![0].applicant_is_avaliable),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
@@ -268,13 +252,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         name: 'name_of_person_met',
                                         decoration: inputDecoration(
                                             "Name of Person Met", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.name),
                                     SizedBox(
                                       height: 22,
@@ -291,13 +268,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         ],
                                         decoration: inputDecoration(
                                             "CNIC of Person Met", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.phone),
                                     SizedBox(
                                       height: 22,
@@ -308,15 +278,7 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                             "",
                                         name: 'relationship_with_applicant',
                                         decoration: inputDecoration(
-                                            "Relationship with Applicant",
-                                            ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
+                                            "Relationship with Applicant", ""),
                                         keyboardType: TextInputType.text),
                                     SizedBox(
                                       height: 22,
@@ -333,13 +295,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         ],
                                         decoration:
                                             inputDecoration("Phone (Res)", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.phone),
                                     SizedBox(
                                       height: 22,
@@ -356,17 +311,10 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         name: 'rel_cell',
                                         decoration:
                                             inputDecoration("Cell #", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.phone),
                                   ],
                                 ),
-
+                              ),
                               SizedBox(
                                 height: 22,
                               ),
@@ -381,11 +329,8 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 },
                                 activeColor: appColor,
                                 name: "is_address_correct",
-                                // validator: FormBuilderValidators.required(
-                                //     context,
-                                //     errorText: "Please Select"),
-                                decoration: inputDecoration(
-                                    "Is Address Correct", ""),
+                                decoration:
+                                    inputDecoration("Is Address Correct", ""),
                                 initialValue: snapshot
                                         .data!.data![0].is_address_correct ??
                                     "",
@@ -403,23 +348,16 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                       height: 22,
                                     ),
                                     FormBuilderTextField(
-                                        initialValue: snapshot
-                                            .data!.data![0].correct_address
-                                            ??"",
+                                        maxLines: 5,
+                                        initialValue: snapshot.data!.data![0]
+                                                .correct_address ??
+                                            "",
                                         name: 'correct_address',
                                         decoration: inputDecoration(
                                             "Correct Address", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
-
                               SizedBox(
                                 height: 22,
                               ),
@@ -431,16 +369,22 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 onChanged: (value) {
                                   setState(() {
                                     doesApplicantLiveHere = value;
-
                                     snapshot.data!.data![0]
                                             .does_applicant_live_here =
-                                        value as String;
+                                        value as String?;
+
+                                    if (snapshot.data!.data![0]
+                                            .does_applicant_live_here ==
+                                        "Yes") {
+                                      snapshot.data!.data![0].living_since =
+                                          null;
+                                    } else {
+                                      snapshot.data!.data![0]
+                                          .permanent_address = null;
+                                    }
                                   });
                                 },
                                 name: "does_applicant_live_here",
-                                // validator: FormBuilderValidators.required(
-                                //     context,
-                                //     errorText: "Please Select"),
                                 decoration: inputDecoration(
                                     "Does Applicant Live Here", "hintText"),
                                 options: [
@@ -448,11 +392,34 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                   FormBuilderFieldOption(value: "No"),
                                 ],
                               ),
-                              if (doesApplicantLiveHere == "Yes" ||
-                                  snapshot.data!.data![0]
-                                          .does_applicant_live_here ==
-                                      "Yes")
-                                Column(
+                              Visibility(
+                                visible:
+                                    chechDoesApplicantLiveHereForNewAddress(
+                                        snapshot.data!.data![0]
+                                            .does_applicant_live_here),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    FormBuilderTextField(
+                                        maxLines: 5,
+                                        initialValue: snapshot.data!.data![0]
+                                                .permanent_address ??
+                                            "",
+                                        name: 'permanent_address',
+                                        decoration:
+                                            inputDecoration("New Address", ""),
+                                        keyboardType: TextInputType.text),
+                                  ],
+                                ),
+                              ),
+                              Visibility(
+                                visible:
+                                    chechDoesApplicantLiveHereForWorkingHereSince(
+                                        snapshot.data!.data![0]
+                                            .does_applicant_live_here),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
@@ -462,57 +429,20 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                                 .data!.data![0].living_since ??
                                             "",
                                         name: 'living_since',
-                                        decoration: inputDecoration(
-                                            "Living Since", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
+                                        decoration:
+                                            inputDecoration("Living Since", ""),
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
-                              if (doesApplicantLiveHere == "No" ||
-                                  snapshot.data!.data![0]
-                                          .does_applicant_live_here ==
-                                      "No")
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 22,
-                                    ),
-                                    FormBuilderTextField(
-                                        initialValue: snapshot.data!.data![0]
-                                                .permanent_address ??
-                                            "",
-                                        name: 'permanent_address',
-                                        decoration: inputDecoration(
-                                            "Permanent Address", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
-                                        keyboardType: TextInputType.text),
-                                  ],
-                                ),
-
+                              ),
                               SizedBox(
                                 height: 22,
                               ),
-
                               FormBuilderRadioGroup(
                                 activeColor: appColor,
                                 initialValue:
                                     snapshot.data!.data![0].is_name_plate ?? "",
                                 name: "is_name_plate",
-                                // validator: FormBuilderValidators.required(
-                                //     context,
-                                //     errorText: "Please Select"),
                                 decoration: inputDecoration(
                                     "Name Plate affixed at Residence?",
                                     "hintText"),
@@ -525,7 +455,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 height: 22,
                               ),
                               FormBuilderDropdown(
-                                // activeColor: appColor,
                                 initialValue:
                                     snapshot.data!.data![0].residence_type ??
                                         residenceType[0],
@@ -540,11 +469,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 decoration: inputDecoration(
                                     "Residence Type", "House/Bangalow"),
                                 allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText:
-                                //           "Please Select The Residence Type")
-                                // ]),
                                 items: residenceType
                                     .map((value) => DropdownMenuItem(
                                           value: value,
@@ -567,41 +491,26 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         name: 'other_residence_type',
                                         decoration: inputDecoration(
                                             "Other Details", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
-
                               SizedBox(
                                 height: 22,
                               ),
                               FormBuilderDropdown(
-                                //  activeColor: appColor,
                                 initialValue:
                                     snapshot.data!.data![0].residence_is ??
                                         residenceIs[0],
                                 name: 'residence_is',
                                 decoration: inputDecoration("Residence Is", ""),
                                 allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "PLease Select")
-                                // ]),
                                 onChanged: (val) {
                                   setState(() {
-                                    snapshot.data!.data![0]
-                                            .residence_is =
+                                    snapshot.data!.data![0].residence_is =
                                         val as String;
                                     residenceIsChange = val;
                                   });
                                 },
-
                                 items: residenceIs
                                     .map((value) => DropdownMenuItem(
                                           value: value,
@@ -624,13 +533,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         name: 'monthly_rent',
                                         decoration:
                                             inputDecoration("Monthly Rent", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.text),
                                     SizedBox(
                                       height: 22,
@@ -641,9 +543,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                               .rent_deed_verified ??
                                           "",
                                       name: "rent_deed_verified",
-                                      // validator: FormBuilderValidators.required(
-                                      //     context,
-                                      //     errorText: "Please Select"),
                                       decoration: inputDecoration(
                                           "Rent Deed Verified", ""),
                                       options: [
@@ -653,9 +552,8 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                     ),
                                   ],
                                 ),
-                              if (residenceIsChange == "Others"||
-                                  snapshot.data!.data![0]
-                                          .residence_is ==
+                              if (residenceIsChange == "Others" ||
+                                  snapshot.data!.data![0].residence_is ==
                                       "Others")
                                 Column(
                                   children: [
@@ -669,17 +567,9 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         name: 'other_residence_type',
                                         decoration: inputDecoration(
                                             "Other Details", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
-
                               SizedBox(
                                 height: 22,
                               ),
@@ -691,11 +581,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 decoration: inputDecoration(
                                     "Residence Utilization", "Residential"),
                                 allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText:
-                                //           "Please Select The Residence Utilization")
-                                // ]),
                                 items: residenceUtilization
                                     .map((value) => DropdownMenuItem(
                                           value: value,
@@ -713,34 +598,7 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                   name: 'residence_area',
                                   decoration: inputDecoration(
                                       "Residence Area", "Residence Area"),
-                                  // validator: FormBuilderValidators.compose([
-                                  //   FormBuilderValidators.required(context,
-                                  //       errorText:
-                                  //           "Please Select The Residence Area"),
-                                  //   FormBuilderValidators.numeric(context,
-                                  //       errorText: "Please Select The Number"),
-                                  //   FormBuilderValidators.min(context, 70,
-                                  //       errorText: "Max Range is 70"),
-                                  // ]),
                                   keyboardType: TextInputType.phone),
-
-                              // FormBuilderSlider(
-                              //   name: 'residence_area',
-                              //   validator: FormBuilderValidators.compose([
-                              //     FormBuilderValidators.min(context, 6),
-                              //   ]),
-                              //   // onChanged: _onChanged,
-                              //   min: 0.0,
-                              //   max: 100.0,
-                              //   initialValue: 7.0,
-                              //   divisions: 20,
-                              //   activeColor: appColor,
-                              //   inactiveColor: appColor.withOpacity(0.5),
-                              //   decoration: InputDecoration(
-                              //     labelText: 'Residence Area',
-                              //             labelStyle: TextStyle(color: appColor)),
-
-                              // ),
                               SizedBox(
                                 height: 22,
                               ),
@@ -752,10 +610,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 decoration: inputDecoration(
                                     "Residence Area Unit", "Sq. Feet"),
                                 allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "Please Select the Residence")
-                                // ]),
                                 items: residenceAreaUnit
                                     .map((value) => DropdownMenuItem(
                                           value: value,
@@ -774,15 +628,7 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                   decoration: inputDecoration(
                                       "Residence Area Details",
                                       "A/House Number,Area,City"),
-                                  // validator: FormBuilderValidators.compose([
-                                  //   FormBuilderValidators.required(context,
-                                  //       errorText:
-                                  //           "Please fill the Residence Area Details"),
-                                  //   FormBuilderValidators.min(context, 70,
-                                  //       errorText: "Max Range is 70"),
-                                  // ]),
                                   keyboardType: TextInputType.text),
-
                               SizedBox(
                                 height: 22,
                               ),
@@ -795,11 +641,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                     "Residence Condition",
                                     "Residence Condition"),
                                 allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText:
-                                //           "Please select the Residence Condition")
-                                // ]),
                                 items: residenceCondition
                                     .map((value) => DropdownMenuItem(
                                           value: value,
@@ -818,11 +659,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 decoration: inputDecoration(
                                     "Area Condition", "Area Condition"),
                                 allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText:
-                                //           "Please select the Area Condition")
-                                // ]),
                                 items: areaCondition
                                     .map((value) => DropdownMenuItem(
                                           value: value,
@@ -830,7 +666,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         ))
                                     .toList(),
                               ),
-
                               SizedBox(
                                 height: 22,
                               ),
@@ -838,13 +673,9 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 activeColor: appColor,
                                 initialValue:
                                     snapshot.data!.data![0].neighbourhood ?? "",
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "Please Select")
-                                // ]),
                                 name: "neighbourhood",
-                                decoration: inputDecoration(
-                                    "Neighbourhood", ""),
+                                decoration:
+                                    inputDecoration("Neighbourhood", ""),
                                 options: [
                                   FormBuilderFieldOption(value: "Planned"),
                                   FormBuilderFieldOption(value: "UnPlanned"),
@@ -858,10 +689,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 initialValue:
                                     snapshot.data!.data![0].area_accessbility ??
                                         "",
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "Please Select")
-                                // ]),
                                 name: "area_accessbility",
                                 decoration: inputDecoration(
                                     "Area Accessbility", "hintText"),
@@ -870,7 +697,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                   FormBuilderFieldOption(value: "Difficult"),
                                 ],
                               ),
-
                               SizedBox(
                                 height: 22,
                               ),
@@ -882,10 +708,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 decoration: inputDecoration(
                                     "Residence Belonging", "Upper/Lower"),
                                 allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "Please Select Belonging")
-                                // ]),
                                 items: residentsBelongTo
                                     .map((value) => DropdownMenuItem(
                                           value: value,
@@ -893,7 +715,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                         ))
                                     .toList(),
                               ),
-
                               SizedBox(
                                 height: 22,
                               ),
@@ -902,10 +723,6 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                                 initialValue:
                                     snapshot.data!.data![0].repossession ?? "",
                                 name: "repossession",
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "Please Select")
-                                // ]),
                                 decoration: inputDecoration(
                                     "Repossession", "Repossession"),
                                 options: [
@@ -917,13 +734,12 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
                           ),
                         ),
                       ),
-                     ],
+                    ],
                   );
                 } else {
                   return Align(
                       alignment: Alignment.center,
                       child: Center(
-                      
                           child: CircularProgressIndicator(
                         color: appColor,
                         backgroundColor: Colors.grey,
@@ -933,5 +749,39 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
         ),
       ),
     );
+  }
+
+  chechDoesApplicantLiveHereForNewAddress(
+      String? wp_does_applicant_works_here) {
+    if (wp_does_applicant_works_here == "No") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  chechDoesApplicantLiveHereForWorkingHereSince(
+      String? wp_does_applicant_works_here) {
+    if (wp_does_applicant_works_here == "Yes") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  chechIsApplicantAvaliable1(String? applicant_is_avaliable) {
+    if (applicant_is_avaliable == "Yes") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  chechIsApplicantAvaliable2(String? applicant_is_avaliable) {
+    if (applicant_is_avaliable == "No") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

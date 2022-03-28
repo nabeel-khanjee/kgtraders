@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/show_toast.dart';
 import 'package:radium_tech/Components/upper_case.dart';
 import 'package:radium_tech/Model/ResidenceModel/get_applicant_data.dart';
@@ -69,6 +70,10 @@ class _MarketPlaceApplicantDetailsState
   String? business_name;
 
   Future<GetApplicantData>? getApplicantdetailsFromServer;
+
+  Map<String, String>? locationData;
+
+  bool confirmLocation = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -190,37 +195,36 @@ class _MarketPlaceApplicantDetailsState
                             SizedBox(
                               height: 22,
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: appColor)),
-                              child: MaterialButton(
-                                onPressed: () async {
-                                  setState(() {
-                                    _dob = "$selectedDate.toLocal()}"
-                                        .split(' ')[0];
-                                  });
+                            MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(color: appColor)),
+                              color: appColor.withOpacity(.5),
+                              onPressed: () async {
+                                setState(() {
+                                  _dob =
+                                      "$selectedDate.toLocal()}".split(' ')[0];
+                                });
 
-                                  _selectDate(context);
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Date of birth",
-                                      style: TextStyle(color: appColor),
-                                    ),
-                                    Text(
-                                      _dob != null
-                                          ? "$_dob".split(' ')[0]
-                                          : snapshot.data!.data![0].dob != null
-                                              ? snapshot.data!.data![0].dob!
-                                              : "Pick your date of birth",
-                                    ),
-                                  ],
-                                ),
+                                _selectDate(context);
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Date of birth",
+                                    style: TextStyle(color: textColor),
+                                  ),
+                                  Text(
+                                    _dob != null
+                                        ? "$_dob".split(' ')[0]
+                                        : snapshot.data!.data![0].dob != null
+                                            ? snapshot.data!.data![0].dob!
+                                            : "Pick your date of birth",
+                                    style: TextStyle(color: textColor),
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
@@ -379,6 +383,7 @@ class _MarketPlaceApplicantDetailsState
                               height: 22,
                             ),
                             FormBuilderTextField(
+                                maxLines: 5,
                                 onChanged: (value) {
                                   address = value;
                                 },
@@ -405,6 +410,47 @@ class _MarketPlaceApplicantDetailsState
                                   ? currentAddress!
                                   : "Location",
                               style: TextStyle(color: appColor),
+                            ),
+                            Visibility(
+                              visible: confirmLocation,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(color: appColor)),
+                                  color: appColor.withOpacity(.5),
+                                  onPressed: () async {
+                                    locationData = {
+                                      "longitude":
+                                          currentPosition!.longitude.toString(),
+                                      "latitiude":
+                                          currentPosition!.latitude.toString(),
+                                    };
+                                    print(locationData);
+                                    var res = await SendApplicantDetails()
+                                        .sendApplicantDetails(locationData,
+                                            "/updateCordinates/${widget.surveyId}");
+                                    var body = jsonDecode(res.body);
+                                    if (body["success"]) {
+                                      showToastApp();
+                                      // Navigator.pop(context);
+                                    }
+                                  },
+                                  child: Container(
+                                      height: 50,
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: appColor),
+                                      ),
+                                      child: Center(
+                                          child: Text(
+                                        "Confirm Location",
+                                        style: TextStyle(color: textColor),
+                                      ))),
+                                ),
+                              ),
                             ),
                             SizedBox(
                               height: 22,
@@ -434,6 +480,10 @@ class _MarketPlaceApplicantDetailsState
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(color: appColor)),
+                          color: appColor.withOpacity(.5),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -441,17 +491,19 @@ class _MarketPlaceApplicantDetailsState
                             children: [
                               Icon(
                                 Icons.navigate_before,
-                                color: appColor,
+                                color: textColor,
                               ),
                               Text(
-                                'Back to Form',
-                                style: TextStyle(color: appColor),
+                                'Back To Options',
+                                style: TextStyle(color: textColor),
                               ),
                             ],
                           ),
                         ),
                         MaterialButton(
                           onPressed: () async {
+                                  buildShowDialog(context);
+
                             formKey.currentState!.save();
                             // if (formKey.currentState!.validate()) {
                             print(datepicker.text);
@@ -477,9 +529,9 @@ class _MarketPlaceApplicantDetailsState
                                   snapshot.data!.data![0].residence_address,
                               "landmark":
                                   landmark ?? snapshot.data!.data![0].landmark,
-                              "longitude":
-                                  currentPosition!.longitude.toString(),
-                              "latitiude": currentPosition!.latitude.toString(),
+                              // "longitude":
+                              //     currentPosition!.longitude.toString(),
+                              // "latitiude": currentPosition!.latitude.toString(),
                               "designation": designation ??
                                   snapshot.data!.data![0].applicant_designation,
                               "business_name": business_name ??
@@ -498,25 +550,32 @@ class _MarketPlaceApplicantDetailsState
                               showToastApp();
                               Navigator.pop(context);
                             }
-                            // } else {
+
+                                     if (body['success']) {
+                                  // showToastApp();
+                                  Navigator.pop(context);
+                                }
+                                 // } else {
                             //   print("validation failed");
                             // }
                           },
-                       child: Row(
-                         children: [
-  Text(
-                            "Submit",
-                            style: TextStyle(color: appColor),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(color: appColor)),
+                          color: appColor.withOpacity(.5),
+                          child: Row(
+                            children: [
+                              Text(
+                                "Submit",
+                                style: TextStyle(color: textColor),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: textColor,
+                                size: 15,
+                              ),
+                            ],
                           ),
-                           Icon(
-                            Icons.arrow_forward_ios,
-                            color: appColor,
-                            size: 15,
-                          ),
-                          
-                         ],
-                       ),
-                         
                         ),
                       ],
                     ),
@@ -565,6 +624,7 @@ class _MarketPlaceApplicantDetailsState
             "${place.locality}, ${place.postalCode}, ${place.country}, ${place.subLocality}, ";
         print(currentAddress);
         _loading = false;
+        confirmLocation = true;
       });
     } catch (e) {
       print(e);

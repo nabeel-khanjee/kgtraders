@@ -1,640 +1,10 @@
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter_form_builder/flutter_form_builder.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:radium_tech/Components/box_shadow_for_app.dart';
-// import 'package:radium_tech/Components/decoration_for_image.dart';
-// import 'package:radium_tech/Components/input_decoration_text.dart';
-// import 'package:radium_tech/Components/show_toast.dart';
-// import 'package:radium_tech/Services/ResidenceApi/SendData/add_images.dart';
-// import 'package:radium_tech/Utils/colors.dart';
-
-// class SalaryDetails extends StatefulWidget {
-//   final int surveyId;
-
-//   const SalaryDetails({required this.surveyId,  Key? key}) : super(key: key);
-
-//   @override
-//   _SalaryDetailsState createState() => _SalaryDetailsState();
-// }
-
-// class _SalaryDetailsState extends State<SalaryDetails> {
-//   Object? isSalarySlipVarified;
-
-//   List verifiedFrom = ["Head Office", 'asd', 'sdf'];
-
-//   AddImages addImages = AddImages();
-//   XFile? pickImage1;
-//   XFile? pickImage2;
-//   XFile? pickImage3;
-//   String finalResponse1 = '';
-//   String finalResponse2 = '';
-//   String finalResponse3 = '';
-//   bool finalResponsebool1 = false;
-//   bool finalResponsebool2 = false;
-//   bool finalResponsebool3 = false;
-//   bool isLoader1 = false;
-//   bool isLoader2 = false;
-//   bool isLoader3 = false;
-
-//   final ImagePicker _picker = ImagePicker();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // var snapshot;
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Salary Slip Details"),
-//       ),
-//       body: SingleChildScrollView(
-//         child: FormBuilder(
-//           child: Center(
-//             child: Column(
-//               children: [
-//                 SizedBox(
-//                   height: 22,
-//                 ),
-//                 FormBuilderRadioGroup(
-//                   name: "salary_slip_shown",
-//                   focusColor: appColor,
-//                   activeColor: appColor,
-//                   options: [
-//                     FormBuilderFieldOption(value: "Yes"),
-//                     FormBuilderFieldOption(value: "No"),
-//                   ],
-//                   decoration: inputDecoration("Salary Slip Provided Shown", ""),
-//                 ),
-//                 SizedBox(
-//                   height: 22,
-//                 ),
-//                 FormBuilderRadioGroup(
-//                   name: "picture_taken",
-//                   focusColor: appColor,
-//                   activeColor: appColor,
-//                   options: [
-//                     FormBuilderFieldOption(value: "Yes"),
-//                     FormBuilderFieldOption(value: "No"),
-//                   ],
-//                   decoration: inputDecoration("If Shown, Picture Taken", ""),
-//                 ),
-//                 SizedBox(
-//                   height: 22,
-//                 ),
-//                 FormBuilderRadioGroup(
-//                   name: "credentials_verified",
-//                   focusColor: appColor,
-//                   activeColor: appColor,
-//                   options: [
-//                     FormBuilderFieldOption(value: "Yes"),
-//                     FormBuilderFieldOption(value: "No"),
-//                   ],
-//                   decoration: inputDecoration("Credentials Verified", ""),
-//                 ),
-//                 SizedBox(
-//                   height: 22,
-//                 ),
-//                 FormBuilderRadioGroup(
-//                   name: "salary_slip_verified",
-//                   focusColor: appColor,
-//                   activeColor: appColor,
-//                   onChanged: (val) {
-//                     setState(() {
-//                       isSalarySlipVarified = val;
-//                     });
-//                   },
-//                   options: [
-//                     FormBuilderFieldOption(value: "Yes"),
-//                     FormBuilderFieldOption(value: "No"),
-//                   ],
-//                   decoration: inputDecoration("Salary Slip Verified", ""),
-//                 ),
-//                 if (isSalarySlipVarified == "Yes")
-//                   Column(
-//                     children: [
-//                       SizedBox(
-//                         height: 22,
-//                       ),
-//                       FormBuilderDropdown(
-//                           decoration:
-//                               inputDecoration("Salary Verified From", ""),
-//                           name: "slary_verified_from",
-//                           items: verifiedFrom
-//                               .map((value) => DropdownMenuItem(
-//                                   value: value, child: Text(value)))
-//                               .toList()),
-//                       SizedBox(
-//                         height: 22,
-//                       ),
-//                       FormBuilderTextField(
-//                         name: "gross_salary",
-//                         decoration: inputDecoration("Gross Salary", ""),
-//                       ),
-//                       SizedBox(
-//                         height: 22,
-//                       ),
-//                       FormBuilderTextField(
-//                         name: "net_salary",
-//                         decoration: inputDecoration("Net Salary", ""),
-//                       ),
-//                     ],
-//                   ),
-//                 SizedBox(
-//                   height: 22,
-//                 ),
-//                 FormBuilderRadioGroup(
-//                   name: "report_status",
-//                   focusColor: appColor,
-//                   activeColor: appColor,
-//                   options: [
-//                     FormBuilderFieldOption(value: "Yes"),
-//                     FormBuilderFieldOption(value: "No"),
-//                   ],
-//                   decoration: inputDecoration("Report Status", ""),
-//                 ),
-//                 SizedBox(
-//                   height: 22,
-//                 ),
-//                 FormBuilderTextField(
-//                   name: "comments",
-//                   decoration: inputDecoration("Comments", ''),
-//                 ),
-//                            Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                       children: [
-//                         Align(
-//                           alignment: Alignment.bottomLeft,
-//                           child: Text(
-//                             "Image2.",
-//                             style: TextStyle(
-//                                 fontWeight: FontWeight.w900,
-//                                 fontStyle: FontStyle.italic,
-//                                 color: appColor,
-//                                 fontSize: 16),
-//                           ),
-//                         ),
-//                         Stack(
-//                           children: [
-//                             finalResponsebool2 == false
-//                                 ? Container(
-//                                     width: 150,
-//                                     height: 150,
-//                                     decoration: decorationForImageBox(),
-//                                     child: isLoader2
-//                                         ? Container(
-//                                             child: CircularProgressIndicator())
-//                                         : snapshot.data!.data![0].image2 != null
-//                                             ? Container(
-//                                                 decoration: BoxDecoration(
-//                                                   borderRadius:
-//                                                       BorderRadius.circular(
-//                                                     150,
-//                                                   ),
-//                                                   image: DecorationImage(
-//                                                       image: NetworkImage(
-//                                                           snapshot
-//                                                               .data!
-//                                                               .data![0]
-//                                                               .image2!)),
-//                                                 ),
-//                                               )
-//                                             : Container(
-//                                                 width: 150,
-//                                                 height: 150,
-//                                                 decoration: BoxDecoration(
-//                                                   color: Colors.white,
-//                                                   boxShadow: [
-//                                                     boxShadowForApp(),
-//                                                   ],
-//                                                   border: Border.all(
-//                                                       color: appColor),
-//                                                   borderRadius:
-//                                                       BorderRadius.circular(
-//                                                           150),
-//                                                   image: DecorationImage(
-//                                                     image: AssetImage(
-//                                                       'assets/createpic.png',
-//                                                     ),
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                   )
-//                                 : Container(
-//                                     width: 150,
-//                                     height: 150,
-//                                     decoration: BoxDecoration(
-//                                       color: Colors.white,
-//                                       boxShadow: [
-//                                         boxShadowForApp(),
-//                                       ],
-//                                       border: Border.all(color: appColor),
-//                                       borderRadius: BorderRadius.circular(150),
-//                                       image: DecorationImage(
-//                                         image:
-//                                             FileImage(File(pickImage2!.path)),
-//                                       ),
-//                                     ),
-//                                   ),
-//                             Positioned(
-//                                 bottom: 0,
-//                                 left: 0,
-//                                 child: Container(
-//                                   decoration: BoxDecoration(
-//                                       color: appColor,
-//                                       borderRadius: BorderRadius.circular(30)),
-//                                   child: IconButton(
-//                                       onPressed: () async {
-//                                         var image = await _picker.pickImage(
-//                                             source: ImageSource.camera,
-//                                             );
-
-//                                         setState(() {
-//                                           pickImage2 = image;
-//                                         });
-//                                       },
-//                                       icon: Icon(
-//                                         Icons.camera_alt,
-//                                         color: Colors.white,
-//                                       )),
-//                                 )),
-//                             Positioned(
-//                                 bottom: 0,
-//                                 right: 0,
-//                                 child: Container(
-//                                   decoration: BoxDecoration(
-//                                       color: appColor,
-//                                       borderRadius: BorderRadius.circular(30)),
-//                                   child: IconButton(
-//                                       onPressed: () async {
-//                                         var image = await _picker.pickImage(
-//                                                                                         source: ImageSource.gallery);
-//                                         setState(() {
-//                                           pickImage2 = image;
-//                                         });
-//                                       },
-//                                       icon: Icon(
-//                                         Icons.image,
-//                                         color: Colors.white,
-//                                       )),
-//                                 )),
-//                           ],
-//                         ),
-//                         MaterialButton(
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(30),
-//                           ),
-//                           color: appColor,
-//                           onPressed: () async {
-//                             var status = await AddImages().addImage(
-//                                 pickImage2!.path,
-//                                 "/addimagetwo/${widget.surveyId}");
-//                             var result = jsonDecode(status);
-
-//                             setState(() {
-//                               finalResponsebool2 = result['success'];
-//                               finalResponse2 = result['imagepath'];
-//                               isLoader2 = true;
-//                             });
-//                             if (finalResponsebool1) {
-//                               showToastApp();
-//                               setState(() {
-//                                 isLoader2 = false;
-//                               });
-//                             }
-//                           },
-//                           child: Text('Save',
-//                               style: TextStyle(
-//                                 color: Colors.white,
-//                               )),
-//                         ),
-//                       ],
-//                     ),
-//                     SizedBox(
-//                       height: 22,
-//                     ),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                       children: [
-//                         Align(
-//                           alignment: Alignment.bottomLeft,
-//                           child: Text(
-//                             "Image2.",
-//                             style: TextStyle(
-//                                 fontWeight: FontWeight.w900,
-//                                 fontStyle: FontStyle.italic,
-//                                 color: appColor,
-//                                 fontSize: 16),
-//                           ),
-//                         ),
-//                         Stack(
-//                           children: [
-//                             finalResponsebool2 == false
-//                                 ? Container(
-//                                     width: 150,
-//                                     height: 150,
-//                                     decoration: decorationForImageBox(),
-//                                     child: isLoader2
-//                                         ? Container(
-//                                             child: CircularProgressIndicator())
-//                                         : snapshot.data!.data![0].image2 != null
-//                                             ? Container(
-//                                                 decoration: BoxDecoration(
-//                                                   borderRadius:
-//                                                       BorderRadius.circular(
-//                                                     150,
-//                                                   ),
-//                                                   image: DecorationImage(
-//                                                       image: NetworkImage(
-//                                                           snapshot
-//                                                               .data!
-//                                                               .data![0]
-//                                                               .image2!)),
-//                                                 ),
-//                                               )
-//                                             : Container(
-//                                                 width: 150,
-//                                                 height: 150,
-//                                                 decoration: BoxDecoration(
-//                                                   color: Colors.white,
-//                                                   boxShadow: [
-//                                                     boxShadowForApp(),
-//                                                   ],
-//                                                   border: Border.all(
-//                                                       color: appColor),
-//                                                   borderRadius:
-//                                                       BorderRadius.circular(
-//                                                           150),
-//                                                   image: DecorationImage(
-//                                                     image: AssetImage(
-//                                                       'assets/createpic.png',
-//                                                     ),
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                   )
-//                                 : Container(
-//                                     width: 150,
-//                                     height: 150,
-//                                     decoration: BoxDecoration(
-//                                       color: Colors.white,
-//                                       boxShadow: [
-//                                         boxShadowForApp(),
-//                                       ],
-//                                       border: Border.all(color: appColor),
-//                                       borderRadius: BorderRadius.circular(150),
-//                                       image: DecorationImage(
-//                                         image:
-//                                             FileImage(File(pickImage2!.path)),
-//                                       ),
-//                                     ),
-//                                   ),
-//                             Positioned(
-//                                 bottom: 0,
-//                                 left: 0,
-//                                 child: Container(
-//                                   decoration: BoxDecoration(
-//                                       color: appColor,
-//                                       borderRadius: BorderRadius.circular(30)),
-//                                   child: IconButton(
-//                                       onPressed: () async {
-//                                         var image = await _picker.pickImage(
-//                                             source: ImageSource.camera,
-//                                             );
-
-//                                         setState(() {
-//                                           pickImage2 = image;
-//                                         });
-//                                       },
-//                                       icon: Icon(
-//                                         Icons.camera_alt,
-//                                         color: Colors.white,
-//                                       )),
-//                                 )),
-//                             Positioned(
-//                                 bottom: 0,
-//                                 right: 0,
-//                                 child: Container(
-//                                   decoration: BoxDecoration(
-//                                       color: appColor,
-//                                       borderRadius: BorderRadius.circular(30)),
-//                                   child: IconButton(
-//                                       onPressed: () async {
-//                                         var image = await _picker.pickImage(
-//                                                                                         source: ImageSource.gallery);
-//                                         setState(() {
-//                                           pickImage2 = image;
-//                                         });
-//                                       },
-//                                       icon: Icon(
-//                                         Icons.image,
-//                                         color: Colors.white,
-//                                       )),
-//                                 )),
-//                           ],
-//                         ),
-//                         MaterialButton(
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(30),
-//                           ),
-//                           color: appColor,
-//                           onPressed: () async {
-//                             var status = await AddImages().addImage(
-//                                 pickImage2!.path,
-//                                 "/addimagetwo/${widget.surveyId}");
-//                             var result = jsonDecode(status);
-
-//                             setState(() {
-//                               finalResponsebool2 = result['success'];
-//                               finalResponse2 = result['imagepath'];
-//                               isLoader2 = true;
-//                             });
-//                             if (finalResponsebool1) {
-//                               showToastApp();
-//                               setState(() {
-//                                 isLoader2 = false;
-//                               });
-//                             }
-//                           },
-//                           child: Text('Save',
-//                               style: TextStyle(
-//                                 color: Colors.white,
-//                               )),
-//                         ),
-//                       ],
-//                     ),
-//                     SizedBox(
-//                       height: 22,
-//                     ),
-//                     Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                       children: [
-//                         Align(
-//                           alignment: Alignment.bottomLeft,
-//                           child: Text(
-//                             "Image2.",
-//                             style: TextStyle(
-//                                 fontWeight: FontWeight.w900,
-//                                 fontStyle: FontStyle.italic,
-//                                 color: appColor,
-//                                 fontSize: 16),
-//                           ),
-//                         ),
-//                         Stack(
-//                           children: [
-//                             finalResponsebool2 == false
-//                                 ? Container(
-//                                     width: 150,
-//                                     height: 150,
-//                                     decoration: decorationForImageBox(),
-//                                     child: isLoader2
-//                                         ? Container(
-//                                             child: CircularProgressIndicator())
-//                                         : snapshot.data!.data![0].image2 != null
-//                                             ? Container(
-//                                                 decoration: BoxDecoration(
-//                                                   borderRadius:
-//                                                       BorderRadius.circular(
-//                                                     150,
-//                                                   ),
-//                                                   image: DecorationImage(
-//                                                       image: NetworkImage(
-//                                                           snapshot
-//                                                               .data!
-//                                                               .data![0]
-//                                                               .image2!)),
-//                                                 ),
-//                                               )
-//                                             : Container(
-//                                                 width: 150,
-//                                                 height: 150,
-//                                                 decoration: BoxDecoration(
-//                                                   color: Colors.white,
-//                                                   boxShadow: [
-//                                                     boxShadowForApp(),
-//                                                   ],
-//                                                   border: Border.all(
-//                                                       color: appColor),
-//                                                   borderRadius:
-//                                                       BorderRadius.circular(
-//                                                           150),
-//                                                   image: DecorationImage(
-//                                                     image: AssetImage(
-//                                                       'assets/createpic.png',
-//                                                     ),
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                   )
-//                                 : Container(
-//                                     width: 150,
-//                                     height: 150,
-//                                     decoration: BoxDecoration(
-//                                       color: Colors.white,
-//                                       boxShadow: [
-//                                         boxShadowForApp(),
-//                                       ],
-//                                       border: Border.all(color: appColor),
-//                                       borderRadius: BorderRadius.circular(150),
-//                                       image: DecorationImage(
-//                                         image:
-//                                             FileImage(File(pickImage2!.path)),
-//                                       ),
-//                                     ),
-//                                   ),
-//                             Positioned(
-//                                 bottom: 0,
-//                                 left: 0,
-//                                 child: Container(
-//                                   decoration: BoxDecoration(
-//                                       color: appColor,
-//                                       borderRadius: BorderRadius.circular(30)),
-//                                   child: IconButton(
-//                                       onPressed: () async {
-//                                         var image = await _picker.pickImage(
-//                                             source: ImageSource.camera,
-//                                             );
-
-//                                         setState(() {
-//                                           pickImage2 = image;
-//                                         });
-//                                       },
-//                                       icon: Icon(
-//                                         Icons.camera_alt,
-//                                         color: Colors.white,
-//                                       )),
-//                                 )),
-//                             Positioned(
-//                                 bottom: 0,
-//                                 right: 0,
-//                                 child: Container(
-//                                   decoration: BoxDecoration(
-//                                       color: appColor,
-//                                       borderRadius: BorderRadius.circular(30)),
-//                                   child: IconButton(
-//                                       onPressed: () async {
-//                                         var image = await _picker.pickImage(
-//                                                                                         source: ImageSource.gallery);
-//                                         setState(() {
-//                                           pickImage2 = image;
-//                                         });
-//                                       },
-//                                       icon: Icon(
-//                                         Icons.image,
-//                                         color: Colors.white,
-//                                       )),
-//                                 )),
-//                           ],
-//                         ),
-//                         MaterialButton(
-//                           shape: RoundedRectangleBorder(
-//                             borderRadius: BorderRadius.circular(30),
-//                           ),
-//                           color: appColor,
-//                           onPressed: () async {
-//                             var status = await AddImages().addImage(
-//                                 pickImage2!.path,
-//                                 "/addimagetwo/${widget.surveyId}");
-//                             var result = jsonDecode(status);
-
-//                             setState(() {
-//                               finalResponsebool2 = result['success'];
-//                               finalResponse2 = result['imagepath'];
-//                               isLoader2 = true;
-//                             });
-//                             if (finalResponsebool1) {
-//                               showToastApp();
-//                               setState(() {
-//                                 isLoader2 = false;
-//                               });
-//                             }
-//                           },
-//                           child: Text('Save',
-//                               style: TextStyle(
-//                                 color: Colors.white,
-//                               )),
-//                         ),
-//                       ],
-//                     ),
-//                     SizedBox(
-//                       height: 22,
-//                     ),
-
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:radium_tech/Components/backToOptions.dart';
 import 'package:radium_tech/Components/box_shadow_for_app.dart';
 import 'package:radium_tech/Components/decoration_for_image.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
@@ -1243,9 +613,22 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                                           )),
                                       Align(
                                         alignment: Alignment.bottomRight,
-                                        child: CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor: appColor,
+                                        child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              border:
+                                                  Border.all(color: appColor),
+                                              color: appColor.withOpacity(.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: appColor
+                                                        .withOpacity(.5),
+                                                    blurRadius: 5,
+                                                    offset: Offset(0, 5))
+                                              ]),
                                           child: InkWell(
                                             onTap: () {
                                               _showChoiceDialog1(context);
@@ -1272,9 +655,15 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                                     height: 30,
                                     width: 50,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: appColor,
-                                    ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: appColor.withOpacity(0.5),
+                                              blurRadius: 5,
+                                              offset: Offset(0, 5))
+                                        ],
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: appColor.withOpacity(0.5),
+                                        border: Border.all(color: appColor)),
                                     child: const Center(
                                         child: Text(
                                       'Save',
@@ -1342,9 +731,22 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                                           )),
                                       Align(
                                         alignment: Alignment.bottomRight,
-                                        child: CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor: appColor,
+                                        child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              border:
+                                                  Border.all(color: appColor),
+                                              color: appColor.withOpacity(.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: appColor
+                                                        .withOpacity(.5),
+                                                    blurRadius: 5,
+                                                    offset: Offset(0, 5))
+                                              ]),
                                           child: InkWell(
                                             onTap: () {
                                               _showChoiceDialog2(context);
@@ -1371,9 +773,15 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                                     height: 30,
                                     width: 50,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: appColor,
-                                    ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: appColor.withOpacity(0.5),
+                                              blurRadius: 5,
+                                              offset: Offset(0, 5))
+                                        ],
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: appColor.withOpacity(0.5),
+                                        border: Border.all(color: appColor)),
                                     child: const Center(
                                         child: Text(
                                       'Save',
@@ -1441,9 +849,22 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                                           )),
                                       Align(
                                         alignment: Alignment.bottomRight,
-                                        child: CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor: appColor,
+                                        child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              border:
+                                                  Border.all(color: appColor),
+                                              color: appColor.withOpacity(.5),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: appColor
+                                                        .withOpacity(.5),
+                                                    blurRadius: 5,
+                                                    offset: Offset(0, 5))
+                                              ]),
                                           child: InkWell(
                                             onTap: () {
                                               _showChoiceDialog3(context);
@@ -1470,9 +891,15 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                                     height: 30,
                                     width: 50,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: appColor,
-                                    ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: appColor.withOpacity(0.5),
+                                              blurRadius: 5,
+                                              offset: Offset(0, 5))
+                                        ],
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: appColor.withOpacity(0.5),
+                                        border: Border.all(color: appColor)),
                                     child: const Center(
                                         child: Text(
                                       'Save',
@@ -1485,497 +912,6 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                               ],
                             ),
                           ),
-
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //   children: [
-                          //     Align(
-                          //       alignment: Alignment.bottomLeft,
-                          //       child: Text(
-                          //         "Image1.",
-                          //         style: TextStyle(
-                          //             fontWeight: FontWeight.w900,
-                          //             fontStyle: FontStyle.italic,
-                          //             color: appColor,
-                          //             fontSize: 16),
-                          //       ),
-                          //     ),
-                          //     Stack(
-                          //       children: [
-                          //         finalResponsebool1 == false
-                          //             ? Container(
-                          //                 width: 150,
-                          //                 height: 150,
-                          //                 decoration: decorationForImageBox(),
-                          //                 child: isLoader1
-                          //                     ? Container(
-                          //                         child:
-                          //                             CircularProgressIndicator())
-                          //                     : snapshot.data!.data![0]
-                          //                                 .wp_ss_image1 !=
-                          //                             null
-                          //                         ? Container(
-                          //                             decoration: BoxDecoration(
-                          //                               borderRadius:
-                          //                                   BorderRadius
-                          //                                       .circular(
-                          //                                 150,
-                          //                               ),
-                          //                               image: DecorationImage(
-                          //                                   image: NetworkImage(
-                          //                                       snapshot
-                          //                                           .data!
-                          //                                           .data![0]
-                          //                                           .wp_ss_image1!)),
-                          //                             ),
-                          //                           )
-                          //                         : Container(
-                          //                             width: 150,
-                          //                             height: 150,
-                          //                             decoration: BoxDecoration(
-                          //                               color: Colors.white,
-                          //                               boxShadow: [
-                          //                                 boxShadowForApp(),
-                          //                               ],
-                          //                               border: Border.all(
-                          //                                   color: appColor),
-                          //                               borderRadius:
-                          //                                   BorderRadius
-                          //                                       .circular(150),
-                          //                               image: DecorationImage(
-                          //                                 image: AssetImage(
-                          //                                   'assets/createpic.png',
-                          //                                 ),
-                          //                               ),
-                          //                             ),
-                          //                           ),
-                          //               )
-                          //             : Container(
-                          //                 width: 150,
-                          //                 height: 150,
-                          //                 decoration: BoxDecoration(
-                          //                   color: Colors.white,
-                          //                   boxShadow: [
-                          //                     boxShadowForApp(),
-                          //                   ],
-                          //                   border: Border.all(color: appColor),
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(150),
-                          //                   image: DecorationImage(
-                          //                     image: FileImage(
-                          //                         File(pickImage1!.path)),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //         Positioned(
-                          //             bottom: 0,
-                          //             left: 0,
-                          //             child: Container(
-                          //               decoration: BoxDecoration(
-                          //                   color: appColor,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(30)),
-                          //               child: IconButton(
-                          //                   onPressed: () async {
-                          //                     var image =
-                          //                         await _picker.pickImage(
-                          //                       source: ImageSource.camera,
-                          //                     );
-
-                          //                     setState(() {
-                          //                       pickImage1 = image;
-                          //                     });
-                          //                   },
-                          //                   icon: Icon(
-                          //                     Icons.camera_alt,
-                          //                     color: Colors.white,
-                          //                   )),
-                          //             )),
-                          //         Positioned(
-                          //             bottom: 0,
-                          //             right: 0,
-                          //             child: Container(
-                          //               decoration: BoxDecoration(
-                          //                   color: appColor,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(30)),
-                          //               child: IconButton(
-                          //                   onPressed: () async {
-                          //                     var image =
-                          //                         await _picker.pickImage(
-                          //                             source:
-                          //                                 ImageSource.gallery);
-                          //                     setState(() {
-                          //                       pickImage1 = image;
-                          //                     });
-                          //                   },
-                          //                   icon: Icon(
-                          //                     Icons.image,
-                          //                     color: Colors.white,
-                          //                   )),
-                          //             )),
-                          //       ],
-                          //     ),
-                          //     MaterialButton(
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(30),
-                          //       ),
-                          //       color: appColor,
-                          //       onPressed: () async {
-                          //         var status = await AddImages().addImage(
-                          //             pickImage1!.path,
-                          //             "/addsalaryimageone/${widget.surveyId}");
-                          //         var result = jsonDecode(status);
-
-                          //         setState(() {
-                          //           finalResponsebool1 = result['success'];
-                          //           finalResponse1 = result['imagepath'];
-                          //           isLoader1 = true;
-                          //         });
-                          //         if (finalResponsebool1) {
-                          //           showToastApp();
-                          //           setState(() {
-                          //             isLoader1 = false;
-                          //           });
-                          //         }
-                          //       },
-                          //       child: Text('Save',
-                          //           style: TextStyle(
-                          //             color: Colors.white,
-                          //           )),
-                          //     ),
-                          //   ],
-                          // ),
-                          // SizedBox(
-                          //   height: 22,
-                          // ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //   children: [
-                          //     Align(
-                          //       alignment: Alignment.bottomLeft,
-                          //       child: Text(
-                          //         "Image2.",
-                          //         style: TextStyle(
-                          //             fontWeight: FontWeight.w900,
-                          //             fontStyle: FontStyle.italic,
-                          //             color: appColor,
-                          //             fontSize: 16),
-                          //       ),
-                          //     ),
-                          //     Stack(
-                          //       children: [
-                          //         finalResponsebool2 == false
-                          //             ? Container(
-                          //                 width: 150,
-                          //                 height: 150,
-                          //                 decoration: decorationForImageBox(),
-                          //                 child: isLoader2
-                          //                     ? Container(
-                          //                         child:
-                          //                             CircularProgressIndicator())
-                          //                     : snapshot.data!.data![0]
-                          //                                 .wp_ss_image2 !=
-                          //                             null
-                          //                         ? Container(
-                          //                             decoration: BoxDecoration(
-                          //                               borderRadius:
-                          //                                   BorderRadius
-                          //                                       .circular(
-                          //                                 150,
-                          //                               ),
-                          //                               image: DecorationImage(
-                          //                                   image: NetworkImage(
-                          //                                       snapshot
-                          //                                           .data!
-                          //                                           .data![0]
-                          //                                           .wp_ss_image2!)),
-                          //                             ),
-                          //                           )
-                          //                         : Container(
-                          //                             width: 150,
-                          //                             height: 150,
-                          //                             decoration: BoxDecoration(
-                          //                               color: Colors.white,
-                          //                               boxShadow: [
-                          //                                 boxShadowForApp(),
-                          //                               ],
-                          //                               border: Border.all(
-                          //                                   color: appColor),
-                          //                               borderRadius:
-                          //                                   BorderRadius
-                          //                                       .circular(150),
-                          //                               image: DecorationImage(
-                          //                                 image: AssetImage(
-                          //                                   'assets/createpic.png',
-                          //                                 ),
-                          //                               ),
-                          //                             ),
-                          //                           ),
-                          //               )
-                          //             : Container(
-                          //                 width: 150,
-                          //                 height: 150,
-                          //                 decoration: BoxDecoration(
-                          //                   color: Colors.white,
-                          //                   boxShadow: [
-                          //                     boxShadowForApp(),
-                          //                   ],
-                          //                   border: Border.all(color: appColor),
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(150),
-                          //                   image: DecorationImage(
-                          //                     image: FileImage(
-                          //                         File(pickImage2!.path)),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //         Positioned(
-                          //             bottom: 0,
-                          //             left: 0,
-                          //             child: Container(
-                          //               decoration: BoxDecoration(
-                          //                   color: appColor,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(30)),
-                          //               child: IconButton(
-                          //                   onPressed: () async {
-                          //                     var image =
-                          //                         await _picker.pickImage(
-                          //                       source: ImageSource.camera,
-                          //                     );
-
-                          //                     setState(() {
-                          //                       pickImage2 = image;
-                          //                     });
-                          //                   },
-                          //                   icon: Icon(
-                          //                     Icons.camera_alt,
-                          //                     color: Colors.white,
-                          //                   )),
-                          //             )),
-                          //         Positioned(
-                          //             bottom: 0,
-                          //             right: 0,
-                          //             child: Container(
-                          //               decoration: BoxDecoration(
-                          //                   color: appColor,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(30)),
-                          //               child: IconButton(
-                          //                   onPressed: () async {
-                          //                     var image =
-                          //                         await _picker.pickImage(
-                          //                             source:
-                          //                                 ImageSource.gallery);
-                          //                     setState(() {
-                          //                       pickImage2 = image;
-                          //                     });
-                          //                   },
-                          //                   icon: Icon(
-                          //                     Icons.image,
-                          //                     color: Colors.white,
-                          //                   )),
-                          //             )),
-                          //       ],
-                          //     ),
-                          //     MaterialButton(
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(30),
-                          //       ),
-                          //       color: appColor,
-                          //       onPressed: () async {
-                          //         var status = await AddImages().addImage(
-                          //             pickImage2!.path,
-                          //             "/addsalaryimagetwo/${widget.surveyId}");
-                          //         var result = jsonDecode(status);
-
-                          //         setState(() {
-                          //           finalResponsebool2 = result['success'];
-                          //           finalResponse2 = result['imagepath'];
-                          //           isLoader2 = true;
-                          //         });
-                          //         if (finalResponsebool1) {
-                          //           showToastApp();
-                          //           setState(() {
-                          //             isLoader2 = false;
-                          //           });
-                          //         }
-                          //       },
-                          //       child: Text('Save',
-                          //           style: TextStyle(
-                          //             color: Colors.white,
-                          //           )),
-                          //     ),
-                          //   ],
-                          // ),
-                          // SizedBox(
-                          //   height: 22,
-                          // ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //   children: [
-                          //     Align(
-                          //       alignment: Alignment.bottomLeft,
-                          //       child: Text(
-                          //         "Image3.",
-                          //         style: TextStyle(
-                          //             fontWeight: FontWeight.w900,
-                          //             fontStyle: FontStyle.italic,
-                          //             color: appColor,
-                          //             fontSize: 16),
-                          //       ),
-                          //     ),
-                          //     Stack(
-                          //       children: [
-                          //         finalResponsebool3 == false
-                          //             ? Container(
-                          //                 width: 150,
-                          //                 height: 150,
-                          //                 decoration: decorationForImageBox(),
-                          //                 child: isLoader3
-                          //                     ? Container(
-                          //                         child:
-                          //                             CircularProgressIndicator())
-                          //                     : snapshot.data!.data![0]
-                          //                                 .wp_ss_image3 !=
-                          //                             null
-                          //                         ? Container(
-                          //                             decoration: BoxDecoration(
-                          //                               borderRadius:
-                          //                                   BorderRadius
-                          //                                       .circular(
-                          //                                 150,
-                          //                               ),
-                          //                               image: DecorationImage(
-                          //                                   image: NetworkImage(
-                          //                                       snapshot
-                          //                                           .data!
-                          //                                           .data![0]
-                          //                                           .wp_ss_image3!)),
-                          //                             ),
-                          //                           )
-                          //                         : Container(
-                          //                             width: 150,
-                          //                             height: 150,
-                          //                             decoration: BoxDecoration(
-                          //                               color: Colors.white,
-                          //                               boxShadow: [
-                          //                                 boxShadowForApp(),
-                          //                               ],
-                          //                               border: Border.all(
-                          //                                   color: appColor),
-                          //                               borderRadius:
-                          //                                   BorderRadius
-                          //                                       .circular(150),
-                          //                               image: DecorationImage(
-                          //                                 image: AssetImage(
-                          //                                   'assets/createpic.png',
-                          //                                 ),
-                          //                               ),
-                          //                             ),
-                          //                           ),
-                          //               )
-                          //             : Container(
-                          //                 width: 150,
-                          //                 height: 150,
-                          //                 decoration: BoxDecoration(
-                          //                   color: Colors.white,
-                          //                   boxShadow: [
-                          //                     boxShadowForApp(),
-                          //                   ],
-                          //                   border: Border.all(color: appColor),
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(150),
-                          //                   image: DecorationImage(
-                          //                     image: FileImage(
-                          //                         File(pickImage3!.path)),
-                          //                   ),
-                          //                 ),
-                          //               ),
-                          //         Positioned(
-                          //             bottom: 0,
-                          //             left: 0,
-                          //             child: Container(
-                          //               decoration: BoxDecoration(
-                          //                   color: appColor,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(30)),
-                          //               child: IconButton(
-                          //                   onPressed: () async {
-                          //                     var image =
-                          //                         await _picker.pickImage(
-                          //                       source: ImageSource.camera,
-                          //                     );
-
-                          //                     setState(() {
-                          //                       pickImage3 = image;
-                          //                     });
-                          //                   },
-                          //                   icon: Icon(
-                          //                     Icons.camera_alt,
-                          //                     color: Colors.white,
-                          //                   )),
-                          //             )),
-                          //         Positioned(
-                          //             bottom: 0,
-                          //             right: 0,
-                          //             child: Container(
-                          //               decoration: BoxDecoration(
-                          //                   color: appColor,
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(30)),
-                          //               child: IconButton(
-                          //                   onPressed: () async {
-                          //                     var image =
-                          //                         await _picker.pickImage(
-                          //                             source:
-                          //                                 ImageSource.gallery);
-                          //                     setState(() {
-                          //                       pickImage3 = image;
-                          //                     });
-                          //                   },
-                          //                   icon: Icon(
-                          //                     Icons.image,
-                          //                     color: Colors.white,
-                          //                   )),
-                          //             )),
-                          //       ],
-                          //     ),
-
-                          //     MaterialButton(
-                          //       shape: RoundedRectangleBorder(
-                          //         borderRadius: BorderRadius.circular(30),
-                          //       ),
-                          //       color: appColor,
-                          //       onPressed: () async {
-                          //         var status = await AddImages().addImage(
-                          //             pickImage3!.path,
-                          //             "/addsalaryimagethree/${widget.surveyId}");
-                          //         var result = jsonDecode(status);
-
-                          //         setState(() {
-                          //           finalResponsebool3 = result['success'];
-                          //           finalResponse3 = result['imagepath'];
-                          //           isLoader3 = true;
-                          //         });
-                          //         if (finalResponsebool1) {
-                          //           showToastApp();
-                          //           setState(() {
-                          //             isLoader3 = false;
-                          //           });
-                          //         }
-                          //       },
-                          //       child: Text('Save',
-                          //           style: TextStyle(
-                          //             color: Colors.white,
-                          //           )),
-                          //     ),
-                          //   ],
-                          // ),
-                          // SizedBox(
-                          //   height: 22,
-                          // ),
                         ],
                       ),
                     ),
@@ -1985,6 +921,8 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                         BackToOptions(),
                         MaterialButton(
                           onPressed: () async {
+                            buildShowDialog(context);
+
                             formKey.currentState!.save();
                             // if (formKey.currentState!.validate()) {
                             print(formKey.currentState!.value);
@@ -2020,30 +958,26 @@ class _SalaryDetailsState extends State<SalaryDetails> {
                               Navigator.pop(context);
                             } else {
                               showToastAppFalse();
-                            }
-
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => SuccessPage(
-                            //               surveyId: widget.surveyId,
-                            //               userId: widget.userId,
-                            //               userName: widget.userName,
-                            //             )));
-                            // }
-                            //  else {
-                            //   print("validation failed");
-                            // }
+                            }    
+                                     if (body['success']) {
+                                  // showToastApp();
+                                  Navigator.pop(context);
+                                }
+                             
                           },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(color: appColor)),
+                          color: appColor.withOpacity(.5),
                           child: Row(
                             children: [
                               Text(
                                 "Submit",
-                                style: TextStyle(color: appColor),
+                                style: TextStyle(color: textColor),
                               ),
                               Icon(
                                 Icons.arrow_forward_ios,
-                                color: appColor,
+                                color: textColor,
                                 size: 15,
                               ),
                             ],

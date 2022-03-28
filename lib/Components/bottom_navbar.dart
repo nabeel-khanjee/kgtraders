@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:radium_tech/Screens/ResidenceForm/myhome.dart';
 import 'package:radium_tech/Utils/colors.dart';
@@ -6,7 +5,9 @@ import 'package:radium_tech/Utils/colors.dart';
 class ButtomNavBar extends StatelessWidget {
   const ButtomNavBar({
     Key? key,
-    required this.widget,required this.onTapBack,required  this.onTapSave,
+    required this.widget,
+    required this.onTapBack,
+    required this.onTapSave,
   }) : super(key: key);
 
   final MyHomePageResidence widget;
@@ -18,34 +19,47 @@ class ButtomNavBar extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        FlatButton.icon(
+        MaterialButton(
           onPressed: onTapBack,
-          label: Text(
-            'Back To List',
-            style: TextStyle(color: appColor),
-          ),
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: appColor,
-            size: 15,
+           shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(color: appColor)),
+          color: appColor.withOpacity(.5),
+         
+          child: Row(
+            children: [
+               Icon(
+                Icons.arrow_back_ios,
+                color: textColor,
+                size: 15,
+              ),
+             Text(
+                'Back To List',
+                style: TextStyle(color: textColor),
+              ),
+            ],
           ),
         ),
         MaterialButton(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(color: appColor)),
+          color: appColor.withOpacity(.5),
           onPressed: onTapSave,
           child: Row(
-        children: [ Text(
-            'Submit',
-            style: TextStyle(color: appColor),
+            children: [
+              Text(
+                'Submit',
+                style: TextStyle(color: textColor),
+              ),
+              Icon(
+                Icons.navigate_next,
+                color: textColor,
+              ),
+            ],
           ),
-          Icon(
-            Icons.navigate_next,
-            color: appColor,
-          ),],    
-          ),
-          
         ),
       ],
     );
   }
 }
-

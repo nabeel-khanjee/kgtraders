@@ -5,6 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/show_toast.dart';
 import 'package:radium_tech/Components/upper_case.dart';
 import 'package:radium_tech/Model/WorkPlaceModel/get_workplace_data.dart';
@@ -96,7 +97,7 @@ class _BusinessProfileState extends State<BusinessProfile> {
 
   bool visible_establish_since = false;
 
-  bool vasible_correct_address = false;
+  bool visible_correct_address = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -151,11 +152,14 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                   FormBuilderFieldOption(value: "No"),
                                 ],
                               ),
-                              if (isApplicantAvaliable == "Yes" ||
-                                  snapshot.data!.data![0]
-                                          .wp_is_applicant_available ==
-                                      "Yes")
-                                Column(
+                              // if (isApplicantAvaliable == "Yes" ||
+                              //     snapshot.data!.data![0]
+                              //             .wp_is_applicant_available ==
+                              //         "Yes")
+                              Visibility(
+                                visible: checkApplicantAvaliable1(snapshot
+                                    .data!.data![0].wp_is_applicant_available),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
@@ -181,16 +185,16 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                     ),
                                     FormBuilderTextField(
                                         initialValue: snapshot.data!.data![0]
-                                                .wp_nic_of_person_met ??
+                                                .wp_cnic_of_applicant ??
                                             "",
-                                        name: 'nic_of_person_met',
+                                        name: 'cnic_of_applicant',
                                         inputFormatters: [
                                           UpperCaseTextFormatter(),
                                           MaskTextInputFormatter(
                                               mask: "#####-#######-#"),
                                         ],
                                         decoration: inputDecoration(
-                                            "CNIC of Person Met", ""),
+                                            "CNIC of Applicant", ""),
                                         // validator: FormBuilderValidators.compose([
                                         //   FormBuilderValidators.required(context,
                                         //       errorText:
@@ -201,11 +205,15 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                         keyboardType: TextInputType.phone),
                                   ],
                                 ),
-                              if (isApplicantAvaliable == "No" ||
-                                  snapshot.data!.data![0]
-                                          .wp_is_applicant_available ==
-                                      "No")
-                                Column(
+                              ),
+                              // if (isApplicantAvaliable == "No" ||
+                              //     snapshot.data!.data![0]
+                              //             .wp_is_applicant_available ==
+                              //         "No")
+                              Visibility(
+                                visible: checkApplicantAvaliable2(snapshot
+                                    .data!.data![0].wp_is_applicant_available),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
@@ -314,6 +322,7 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
+                              ),
                               SizedBox(
                                 height: 22,
                               ),
@@ -329,15 +338,15 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                             .wp_is_address_correct ==
                                         "Yes") {
                                       visible_establish_since = true;
-                                      vasible_correct_address = false;
-                                       snapshot.data!.data![0].wp_correct_address =
-                                          null;
+                                      visible_correct_address = false;
+                                      snapshot.data!.data![0]
+                                          .wp_correct_address = null;
                                     } else {
-                                      snapshot.data!.data![0].wp_establish_time =
-                                          null;
-                                      
+                                      snapshot.data!.data![0]
+                                          .wp_establish_time = null;
+
                                       visible_establish_since = false;
-                                      vasible_correct_address = true;
+                                      visible_correct_address = true;
                                     }
                                   });
                                 },
@@ -356,11 +365,20 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                   FormBuilderFieldOption(value: "No"),
                                 ],
                               ),
-                              if (isAddressCorrect == "Yes" ||
-                                  snapshot.data!.data![0]
-                                          .wp_is_address_correct ==
-                                      "Yes")
-                                Column(
+                              // if (isAddressCorrect == "Yes" ||
+                              //     snapshot.data!.data![0]
+                              //             .wp_is_address_correct ==
+                              //         "Yes")
+
+                              Visibility(
+                                visible: chechIsAddressForEstablishTime(snapshot
+                                    .data!.data![0].wp_is_address_correct)
+
+                                // snapshot.data!.data![0].wp_establish_time=="Yes"?true:false,
+
+                                // ?? visible_establish_since,
+                                ,
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
@@ -382,16 +400,23 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
-                              if (isAddressCorrect == "No" ||
-                                  snapshot.data!.data![0]
-                                          .wp_is_address_correct ==
-                                      "No")
-                                Column(
+                              ),
+                              // if (isAddressCorrect == "No" ||
+                              //     snapshot.data!.data![0]
+                              //             .wp_is_address_correct ==
+                              //         "No")
+
+                              Visibility(
+                                visible: chechIsAddressForCorrectAddress(
+                                    snapshot
+                                        .data!.data![0].wp_is_address_correct),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
                                     ),
                                     FormBuilderTextField(
+                                        maxLines: 5,
                                         initialValue: snapshot.data!.data![0]
                                                 .wp_correct_address ??
                                             "",
@@ -408,6 +433,7 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
+                              ),
                               SizedBox(
                                 height: 22,
                               ),
@@ -423,33 +449,57 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                     snapshot.data!.data![0]
                                             .wp_does_applicant_works_here =
                                         value as String?;
+
+                                    if (snapshot.data!.data![0]
+                                            .wp_does_applicant_works_here ==
+                                        "Yes") {
+                                      visible_establish_since = true;
+                                      visible_correct_address = false;
+                                      snapshot.data!.data![0]
+                                          .wp_correct_address = null;
+                                    } else {
+                                      snapshot.data!.data![0]
+                                          .wp_establish_time = null;
+
+                                      visible_establish_since = false;
+                                      visible_correct_address = true;
+                                    }
                                   });
                                 },
+
                                 name: "does_applicant_works_here",
                                 // validator: FormBuilderValidators.required(
                                 //     context,
                                 //     errorText: "Please Select"),
                                 decoration: inputDecoration(
-                                    "Does Applicant Live Here", "hintText"),
+                                    "Does Applicant Work Here", "hintText"),
                                 options: [
                                   FormBuilderFieldOption(value: "Yes"),
                                   FormBuilderFieldOption(value: "No"),
                                 ],
                               ),
-                              if (doesApplicantLiveHere == "No" ||
-                                  snapshot.data!.data![0]
-                                          .wp_does_applicant_works_here ==
-                                      "No")
-                                Column(
+                              // if (doesApplicantLiveHere == "No" ||
+                              //     snapshot.data!.data![0]
+                              //             .wp_does_applicant_works_here ==
+                              //         "No")
+
+                              Visibility(
+                                visible:
+                                    chechDoesApplicantLiveHereForNewAddress(
+                                        snapshot.data!.data![0]
+                                            .wp_does_applicant_works_here),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
                                     ),
                                     FormBuilderTextField(
-                                        initialValue: snapshot.data!.data![0]
+                                       maxLines: 5,
+                                         initialValue: snapshot.data!.data![0]
                                                 .wp_new_address ??
                                             "",
                                         name: 'new_address',
+                                        
                                         decoration:
                                             inputDecoration("New Address", ""),
                                         // validator: FormBuilderValidators.compose([
@@ -462,11 +512,18 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                         keyboardType: TextInputType.text),
                                   ],
                                 ),
-                              if (doesApplicantLiveHere == "Yes" ||
-                                  snapshot.data!.data![0]
-                                          .wp_does_applicant_works_here ==
-                                      "Yes")
-                                Column(
+                              ),
+                              // if (doesApplicantLiveHere == "Yes" ||
+                              //     snapshot.data!.data![0]
+                              //             .wp_does_applicant_works_here ==
+                              //         "Yes")
+
+                              Visibility(
+                                visible:
+                                    chechDoesApplicantLiveHereForWorkingHereSince(
+                                        snapshot.data!.data![0]
+                                            .wp_does_applicant_works_here),
+                                child: Column(
                                   children: [
                                     SizedBox(
                                       height: 22,
@@ -475,6 +532,11 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                         initialValue: snapshot.data!.data![0]
                                                 .wp_working_here_since ??
                                             "",
+                                        inputFormatters: [
+                                          UpperCaseTextFormatter(),
+                                          MaskTextInputFormatter(
+                                              mask: "##-##-####"),
+                                        ],
                                         name: 'working_here_since',
                                         decoration: inputDecoration(
                                             "Working Since", ""),
@@ -488,6 +550,7 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                         keyboardType: TextInputType.number),
                                   ],
                                 ),
+                              ),
                               SizedBox(
                                 height: 22,
                               ),
@@ -501,7 +564,7 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                 //     context,
                                 //     errorText: "Please Select"),
                                 decoration: inputDecoration(
-                                    "Name Plate affixed at Residence?",
+                                    "Name Plate affixed at Workplace?",
                                     "hintText"),
                                 options: [
                                   FormBuilderFieldOption(value: "Yes"),
@@ -568,86 +631,98 @@ class _BusinessProfileState extends State<BusinessProfile> {
                               SizedBox(
                                 height: 22,
                               ),
-                              FormBuilderDropdown(
-                                //  activeColor: appColor,
-                                initialValue:
-                                    snapshot.data!.data![0].wp_permisses_is ??
-                                        premisesIs[0],
-                                onChanged: (value) {
-                                  setState(() {
-                                    snapshot.data!.data![0].wp_permisses_is =
-                                        value as String?;
-                                    premisesIsOther = value;
-                                  });
-                                },
-                                name: 'permisses_is',
-                                decoration:
-                                    inputDecoration("Premises Is", "Owner"),
-                                allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "PLease Select")
-                                // ]),
-                                items: premisesIs
-                                    .map((value) => DropdownMenuItem(
-                                          value: value,
-                                          child: Text('$value'),
-                                        ))
-                                    .toList(),
-                              ),
-                              if (premisesIsOther == "Ranted" ||
-                                  snapshot.data!.data![0].wp_permisses_is ==
-                                      "Rented")
+                              if (snapshot.data!.data![0].is_employee == 0)
                                 Column(
                                   children: [
+                                    FormBuilderDropdown(
+                                      //  activeColor: appColor,
+                                      initialValue: snapshot
+                                              .data!.data![0].wp_permisses_is ??
+                                          premisesIs[0],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          snapshot.data!.data![0]
+                                                  .wp_permisses_is =
+                                              value as String?;
+                                          premisesIsOther = value;
+                                        });
+                                      },
+                                      name: 'permisses_is',
+                                      decoration: inputDecoration(
+                                          "Premises Is", "Owner"),
+                                      allowClear: true,
+                                      // validator: FormBuilderValidators.compose([
+                                      //   FormBuilderValidators.required(context,
+                                      //       errorText: "PLease Select")
+                                      // ]),
+                                      items: premisesIs
+                                          .map((value) => DropdownMenuItem(
+                                                value: value,
+                                                child: Text('$value'),
+                                              ))
+                                          .toList(),
+                                    ),
+                                    if (premisesIsOther == "Ranted" ||
+                                        snapshot.data!.data![0]
+                                                .wp_permisses_is ==
+                                            "Rented")
+                                      Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 22,
+                                          ),
+                                          FormBuilderTextField(
+                                              initialValue: snapshot
+                                                      .data!
+                                                      .data![0]
+                                                      .wp_premissi_rent ??
+                                                  "",
+                                              name: 'premissi_rent',
+                                              decoration: inputDecoration(
+                                                  "Monthly Rent", ""),
+                                              // validator: FormBuilderValidators.compose([
+                                              //   FormBuilderValidators.required(context,
+                                              //       errorText:
+                                              //           "Please Select The Residence Area"),
+                                              //   FormBuilderValidators.numeric(context,
+                                              //       errorText: "Please Select The Number"),
+                                              // ]),
+                                              keyboardType: TextInputType.text),
+                                        ],
+                                      ),
+                                    if (premisesIsOther == "Others" ||
+                                        snapshot.data!.data![0]
+                                                .wp_permisses_is ==
+                                            "Others")
+                                      Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 22,
+                                          ),
+                                          FormBuilderTextField(
+                                              initialValue: snapshot
+                                                      .data!
+                                                      .data![0]
+                                                      .wp_other_permisses_is ??
+                                                  "",
+                                              name: 'other_permisses_is',
+                                              decoration: inputDecoration(
+                                                  "Other Details", ""),
+                                              // validator: FormBuilderValidators.compose([
+                                              //   FormBuilderValidators.required(context,
+                                              //       errorText:
+                                              //           "Please Select The Residence Area"),
+                                              //   FormBuilderValidators.numeric(context,
+                                              //       errorText: "Please Select The Number"),
+                                              // ]),
+                                              keyboardType: TextInputType.text),
+                                        ],
+                                      ),
                                     SizedBox(
                                       height: 22,
                                     ),
-                                    FormBuilderTextField(
-                                        initialValue: snapshot.data!.data![0]
-                                                .wp_premissi_rent ??
-                                            "",
-                                        name: 'premissi_rent',
-                                        decoration:
-                                            inputDecoration("Monthly Rent", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
-                                        keyboardType: TextInputType.text),
                                   ],
                                 ),
-                              if (premisesIsOther == "Others" ||
-                                  snapshot.data!.data![0].wp_permisses_is ==
-                                      "Others")
-                                Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 22,
-                                    ),
-                                    FormBuilderTextField(
-                                        initialValue: snapshot.data!.data![0]
-                                                .wp_other_permisses_is ??
-                                            "",
-                                        name: 'other_permisses_is',
-                                        decoration: inputDecoration(
-                                            "Other Details", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
-                                        keyboardType: TextInputType.text),
-                                  ],
-                                ),
-                              SizedBox(
-                                height: 22,
-                              ),
                               FormBuilderTextField(
                                   initialValue: snapshot.data!.data![0]
                                           .wp_is_government_employee ??
@@ -666,192 +741,203 @@ class _BusinessProfileState extends State<BusinessProfile> {
                               SizedBox(
                                 height: 22,
                               ),
-                              FormBuilderDropdown(
-                                initialValue: snapshot
-                                        .data!.data![0].wp_business_nature ??
-                                    businessNature[0],
-                                name: 'business_nature',
-                                validator: FormBuilderValidators.required(
-                                    context,
-                                    errorText:
-                                        "please enter the business name"),
-                                decoration: inputDecoration(
-                                    "Business Nature", "Services/Marketing"),
-                                allowClear: true,
-                                onChanged: (value) {
-                                  setState(() {
-                                    snapshot.data!.data![0].wp_business_nature =
-                                        value as String?;
-                                    businessNatureOther = value;
-                                  });
-                                },
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText:
-                                //           "Please Select The Residence Utilization")
-                                // ]),
-                                items: businessNature
-                                    .map((value) => DropdownMenuItem(
-                                          value: value,
-                                          child: Text('$value'),
-                                        ))
-                                    .toList(),
-                              ),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              if (businessNatureOther == "Others" ||
-                                  snapshot.data!.data![0].wp_business_nature ==
-                                      "Others")
+                              if (snapshot.data!.data![0].is_employee == 0)
                                 Column(
                                   children: [
+                                    FormBuilderDropdown(
+                                      initialValue: snapshot.data!.data![0]
+                                              .wp_business_nature ??
+                                          businessNature[0],
+                                      name: 'business_nature',
+                                      validator: FormBuilderValidators.required(
+                                          context,
+                                          errorText:
+                                              "please enter the business name"),
+                                      decoration: inputDecoration(
+                                          "Business Nature",
+                                          "Services/Marketing"),
+                                      allowClear: true,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          snapshot.data!.data![0]
+                                                  .wp_business_nature =
+                                              value as String?;
+                                          businessNatureOther = value;
+                                        });
+                                      },
+                                      // validator: FormBuilderValidators.compose([
+                                      //   FormBuilderValidators.required(context,
+                                      //       errorText:
+                                      //           "Please Select The Residence Utilization")
+                                      // ]),
+                                      items: businessNature
+                                          .map((value) => DropdownMenuItem(
+                                                value: value,
+                                                child: Text('$value'),
+                                              ))
+                                          .toList(),
+                                    ),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    if (businessNatureOther == "Others" ||
+                                        snapshot.data!.data![0]
+                                                .wp_business_nature ==
+                                            "Others")
+                                      Column(
+                                        children: [
+                                          FormBuilderTextField(
+                                              initialValue: snapshot
+                                                      .data!
+                                                      .data![0]
+                                                      .wp_other_business_nature ??
+                                                  "",
+                                              name: 'other_business_nature',
+                                              decoration: inputDecoration(
+                                                  "Other Details", ""),
+                                              // validator: FormBuilderValidators.compose([
+                                              //   FormBuilderValidators.required(context,
+                                              //       errorText:
+                                              //           "Please Select The Residence Area"),
+                                              //   FormBuilderValidators.numeric(context,
+                                              //       errorText: "Please Select The Number"),
+                                              // ]),
+                                              keyboardType: TextInputType.text),
+                                          SizedBox(
+                                            height: 22,
+                                          ),
+                                        ],
+                                      ),
+                                    FormBuilderDropdown(
+                                      initialValue: snapshot.data!.data![0]
+                                              .wp_business_legal_activity ??
+                                          businessLegalEntity[0],
+                                      name: 'business_legal_activity',
+                                      decoration: inputDecoration(
+                                          "Business Legal Entity",
+                                          "Services/Marketing"),
+                                      allowClear: true,
+                                      // validator: FormBuilderValidators.compose([
+                                      //   FormBuilderValidators.required(context,
+                                      //       errorText:
+                                      //           "Please Select The Residence Utilization")
+                                      // ]),
+                                      items: businessLegalEntity
+                                          .map((value) => DropdownMenuItem(
+                                                value: value,
+                                                child: Text('$value'),
+                                              ))
+                                          .toList(),
+                                    ),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    FormBuilderTextField(
+                                        initialValue: snapshot
+                                                .data!.data![0].wp_area_size ??
+                                            "",
+                                        name: 'area_size',
+                                        decoration: inputDecoration(
+                                            "Business Area", "12345678"),
+                                        keyboardType: TextInputType.number),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    FormBuilderDropdown(
+                                      initialValue: snapshot
+                                              .data!.data![0].wp_area_unit ??
+                                          businessAreaUnit[0],
+                                      name: 'area_unit',
+                                      decoration: inputDecoration(
+                                          "Business Area Unit", "Sq. Feet"),
+                                      allowClear: true,
+                                      // validator: FormBuilderValidators.compose([
+                                      //   FormBuilderValidators.required(context,
+                                      //       errorText: "Please Select the Residence")
+                                      // ]),
+                                      items: businessAreaUnit
+                                          .map((value) => DropdownMenuItem(
+                                                value: value,
+                                                child: Text(value),
+                                              ))
+                                          .toList(),
+                                    ),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
                                     FormBuilderTextField(
                                         initialValue: snapshot.data!.data![0]
-                                                .wp_other_business_nature ??
+                                                .wp_area_details ??
                                             "",
-                                        name: 'other_business_nature',
+                                        name: 'area_details',
                                         decoration: inputDecoration(
-                                            "Other Details", ""),
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.required(context,
-                                        //       errorText:
-                                        //           "Please Select The Residence Area"),
-                                        //   FormBuilderValidators.numeric(context,
-                                        //       errorText: "Please Select The Number"),
-                                        // ]),
+                                            "Business Area Details",
+                                            "A/House Number,Area,City"),
                                         keyboardType: TextInputType.text),
                                     SizedBox(
                                       height: 22,
                                     ),
+                                    FormBuilderDropdown(
+                                      initialValue: snapshot.data!.data![0]
+                                              .wp_business_activity ??
+                                          businessActivity[0],
+                                      name: 'business_activity',
+                                      decoration: inputDecoration(
+                                          "Business Activity",
+                                          "Low/Medium/High"),
+                                      allowClear: true,
+                                      items: businessActivity
+                                          .map((value) => DropdownMenuItem(
+                                                value: value,
+                                                child: Text('$value'),
+                                              ))
+                                          .toList(),
+                                    ),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    FormBuilderTextField(
+                                        initialValue: snapshot.data!.data![0]
+                                                .wp_no_of_employees ??
+                                            "",
+                                        name: 'no_of_employees',
+                                        decoration: inputDecoration(
+                                            "No of Employees", "numbers"),
+                                        keyboardType: TextInputType.number),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    FormBuilderTextField(
+                                      // activeColor: appColor,
+                                      initialValue: snapshot.data!.data![0]
+                                              .wp_established_since ??
+                                          "",
+                                      // validator: FormBuilderValidators.compose([
+                                      //   FormBuilderValidators.required(context,
+                                      //       errorText: "Please Select")
+                                      // ]),
+                                      name: "established_since",
+                                      decoration: inputDecoration(
+                                          "Established Since", "Years/Month"),
+                                      // options: [
+                                      //   FormBuilderFieldOption(value: "Planned"),
+                                      //   FormBuilderFieldOption(value: "UnPlanned"),
+                                      // ],
+                                    ),
+                                    SizedBox(
+                                      height: 22,
+                                    ),
+                                    FormBuilderTextField(
+                                      // activeColor: appColor,
+                                      initialValue: snapshot.data!.data![0]
+                                              .wp_business_line ??
+                                          "",
+                                      name: "business_line",
+                                      decoration: inputDecoration(
+                                          "Business Line", "hintText"),
+                                    ),
                                   ],
                                 ),
-                              FormBuilderDropdown(
-                                initialValue: snapshot.data!.data![0]
-                                        .wp_business_legal_activity ??
-                                    businessLegalEntity[0],
-                                name: 'business_legal_activity',
-                                decoration: inputDecoration(
-                                    "Business Legal Entity",
-                                    "Services/Marketing"),
-                                allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText:
-                                //           "Please Select The Residence Utilization")
-                                // ]),
-                                items: businessLegalEntity
-                                    .map((value) => DropdownMenuItem(
-                                          value: value,
-                                          child: Text('$value'),
-                                        ))
-                                    .toList(),
-                              ),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              FormBuilderTextField(
-                                  initialValue:
-                                      snapshot.data!.data![0].wp_area_size ??
-                                          "",
-                                  name: 'area_size',
-                                  decoration: inputDecoration(
-                                      "Business Area", "12345678"),
-                                  keyboardType: TextInputType.number),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              FormBuilderDropdown(
-                                initialValue:
-                                    snapshot.data!.data![0].wp_area_unit ??
-                                        businessAreaUnit[0],
-                                name: 'area_unit',
-                                decoration: inputDecoration(
-                                    "Business Area Unit", "Sq. Feet"),
-                                allowClear: true,
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "Please Select the Residence")
-                                // ]),
-                                items: businessAreaUnit
-                                    .map((value) => DropdownMenuItem(
-                                          value: value,
-                                          child: Text(value),
-                                        ))
-                                    .toList(),
-                              ),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              FormBuilderTextField(
-                                  initialValue:
-                                      snapshot.data!.data![0].wp_area_details ??
-                                          "",
-                                  name: 'area_details',
-                                  decoration: inputDecoration(
-                                      "Business Area Details",
-                                      "A/House Number,Area,City"),
-                                  keyboardType: TextInputType.text),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              FormBuilderDropdown(
-                                initialValue: snapshot
-                                        .data!.data![0].wp_business_activity ??
-                                    businessActivity[0],
-                                name: 'business_activity',
-                                decoration: inputDecoration(
-                                    "Business Activity", "Low/Medium/High"),
-                                allowClear: true,
-                                items: businessActivity
-                                    .map((value) => DropdownMenuItem(
-                                          value: value,
-                                          child: Text('$value'),
-                                        ))
-                                    .toList(),
-                              ),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              FormBuilderTextField(
-                                  initialValue: snapshot
-                                          .data!.data![0].wp_no_of_employees ??
-                                      "",
-                                  name: 'no_of_employees',
-                                  decoration: inputDecoration(
-                                      "No of Employees", "numbers"),
-                                  keyboardType: TextInputType.number),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              FormBuilderTextField(
-                                // activeColor: appColor,
-                                initialValue: snapshot
-                                        .data!.data![0].wp_established_since ??
-                                    "",
-                                // validator: FormBuilderValidators.compose([
-                                //   FormBuilderValidators.required(context,
-                                //       errorText: "Please Select")
-                                // ]),
-                                name: "established_since",
-                                decoration: inputDecoration(
-                                    "Established Since", "Years/Month"),
-                                // options: [
-                                //   FormBuilderFieldOption(value: "Planned"),
-                                //   FormBuilderFieldOption(value: "UnPlanned"),
-                                // ],
-                              ),
-                              SizedBox(
-                                height: 22,
-                              ),
-                              FormBuilderTextField(
-                                // activeColor: appColor,
-                                initialValue:
-                                    snapshot.data!.data![0].wp_business_line ??
-                                        "",
-                                name: "business_line",
-                                decoration: inputDecoration(
-                                    "Business Line", "hintText"),
-                              ),
                             ],
                           ),
                         ),
@@ -863,21 +949,27 @@ class _BusinessProfileState extends State<BusinessProfile> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(color: appColor)),
+                            color: appColor.withOpacity(.5),
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.navigate_before,
-                                  color: appColor,
+                                  color: textColor,
                                 ),
                                 Text(
-                                  'Back to Form',
-                                  style: TextStyle(color: appColor),
+                                  'Back To Options',
+                                  style: TextStyle(color: textColor),
                                 ),
                               ],
                             ),
                           ),
                           MaterialButton(
                             onPressed: () async {
+                                  buildShowDialog(context);
+
                               formKey.currentState!.save();
                               if (formKey.currentState!.validate()) {
                                 print(formKey.currentState!.value);
@@ -892,17 +984,27 @@ class _BusinessProfileState extends State<BusinessProfile> {
                                   showToastApp();
                                   Navigator.pop(context);
                                 }
+
+                                     if (body['success']) {
+                                  // showToastApp();
+                                  Navigator.pop(context);
+                                }
+                             
                               }
                             },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(color: appColor)),
+                            color: appColor.withOpacity(.5),
                             child: Row(
                               children: [
                                 Text(
                                   "Submit",
-                                  style: TextStyle(color: appColor),
+                                  style: TextStyle(color: textColor),
                                 ),
                                 Icon(
                                   Icons.arrow_forward_ios,
-                                  color: appColor,
+                                  color: textColor,
                                   size: 15,
                                 ),
                               ],
@@ -923,5 +1025,63 @@ class _BusinessProfileState extends State<BusinessProfile> {
         ),
       ),
     );
+  }
+
+  chechIsAddressForEstablishTime(String? wp_is_address_correct) {
+    if (wp_is_address_correct == "Yes") {
+      return true;
+    } else {
+      return false;
+      // visible_correct_address = true;
+      // visible_establish_since = false;
+    }
+  }
+
+  chechIsAddressForCorrectAddress(String? wp_is_address_correct) {
+    if (wp_is_address_correct == "No") {
+      return true;
+    } else {
+      return false;
+      // visible_correct_address = true;
+      // visible_establish_since = false;
+    }
+  }
+
+  chechDoesApplicantLiveHereForNewAddress(
+      String? wp_does_applicant_works_here) {
+    if (wp_does_applicant_works_here == "No") {
+      return true;
+    } else {
+      return false;
+      // visible_correct_address = true;
+      // visible_establish_since = false;
+    }
+  }
+
+  chechDoesApplicantLiveHereForWorkingHereSince(
+      String? wp_does_applicant_works_here) {
+    if (wp_does_applicant_works_here == "Yes") {
+      return true;
+    } else {
+      return false;
+      // visible_correct_address = true;
+      // visible_establish_since = false;
+    }
+  }
+
+  checkApplicantAvaliable1(String? wp_is_applicant_available) {
+    if (wp_is_applicant_available == "Yes") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkApplicantAvaliable2(String? wp_is_applicant_available) {
+    if (wp_is_applicant_available == "No") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

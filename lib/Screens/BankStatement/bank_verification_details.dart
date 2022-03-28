@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:radium_tech/Components/backToOptions.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/upper_case.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
@@ -78,6 +80,10 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
   String? bankName;
 
   Object? isDocumentStamped;
+
+  Map<String, String>? locationData;
+
+  bool confirmLocation = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -159,6 +165,7 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
                                 ],
                               ),
                             FormBuilderTextField(
+                                maxLines: 5,
                                 onChanged: (value) {
                                   branchAddress = value;
                                 },
@@ -180,6 +187,46 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
                                   ? currentAddress!
                                   : "Location",
                               style: TextStyle(color: appColor),
+                            ),
+                            Visibility(
+                              visible: confirmLocation,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(color: appColor)),
+                                  color: appColor.withOpacity(.5),
+                                  onPressed: () async {
+                                    locationData = {
+                                      "longitude":
+                                          currentPosition!.longitude.toString(),
+                                      "latitiude":
+                                          currentPosition!.latitude.toString(),
+                                    };
+                                    print(locationData);
+                                    var res = await SendApplicantDetails()
+                                        .sendApplicantDetails(locationData,
+                                            "/updateCordinates/${widget.surveyId}");
+                                    var body = jsonDecode(res.body);
+                                    if (body["success"]) {
+                                      showToastApp();
+                                    }
+                                  },
+                                  child: Container(
+                                      height: 50,
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: appColor),
+                                      ),
+                                      child: Center(
+                                          child: Text(
+                                        "Confirm Location",
+                                        style: TextStyle(color: textColor),
+                                      ))),
+                                ),
+                              ),
                             ),
                             SizedBox(
                               height: 22,
@@ -247,72 +294,72 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
                             SizedBox(
                               height: 22,
                             ),
-                            if(widget.formFormate=="3")
-                            Column(
-                              children: [
-                                FormBuilderTextField(
-                                    onChanged: (value) {
-                                      accountNumber = value;
-                                    },
-                                    initialValue:
-                                        snapshot.data!.data![0].bnkst_account_no ??
-                                            "",
-                                    name: 'account_number',
-                                    decoration:
-                                        inputDecoration("Account Number", ""),
-                                    keyboardType: TextInputType.phone),
-                                SizedBox(
-                                  height: 22,
-                                ),
-                                FormBuilderTextField(
-                                    onChanged: (value) {
-                                      accountTitle = value;
-                                    },
-                                    initialValue: snapshot
-                                            .data!.data![0].bnkst_account_title ??
-                                        "",
-                                    name: 'account_title',
-                                    decoration:
-                                        inputDecoration("Account Title", ""),
-                                    keyboardType: TextInputType.text),
-                                SizedBox(
-                                  height: 22,
-                                ),
-                                FormBuilderRadioGroup(
-                                    initialValue: snapshot.data!.data![0]
-                                            .bnkst_is_account_active ??
-                                        "",
-                                    decoration:
-                                        inputDecoration("Is Account Active", ''),
-                                    activeColor: appColor,
-                                    focusColor: appColor,
-                                    onChanged: (val) {
-                                      isAccountActive = val;
-                                    },
-                                    name: "is_account_active",
-                                    options: [
-                                      FormBuilderFieldOption(value: "Yes"),
-                                      FormBuilderFieldOption(value: "No"),
-                                    ]),
-                                SizedBox(
-                                  height: 22,
-                                ),
-                                FormBuilderTextField(
-                                    onChanged: (value) {
-                                      opentingSince = value;
-                                    },
-                                    initialValue: snapshot
-                                            .data!.data![0].bnkst_operating_since ??
-                                        "",
-                                    name: 'opening_sonce',
-                                    decoration:
-                                        inputDecoration("Opening Since", ""),
-                                    keyboardType: TextInputType.text),
-                                SizedBox(
-                                  height: 22,
-                                ),
-                              ],
-                            ),
+                            if (widget.formFormate == "3")
+                              Column(
+                                children: [
+                                  FormBuilderTextField(
+                                      onChanged: (value) {
+                                        accountNumber = value;
+                                      },
+                                      initialValue: snapshot.data!.data![0]
+                                              .bnkst_account_no ??
+                                          "",
+                                      name: 'account_number',
+                                      decoration:
+                                          inputDecoration("Account Number", ""),
+                                      keyboardType: TextInputType.phone),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  FormBuilderTextField(
+                                      onChanged: (value) {
+                                        accountTitle = value;
+                                      },
+                                      initialValue: snapshot.data!.data![0]
+                                              .bnkst_account_title ??
+                                          "",
+                                      name: 'account_title',
+                                      decoration:
+                                          inputDecoration("Account Title", ""),
+                                      keyboardType: TextInputType.text),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  FormBuilderRadioGroup(
+                                      initialValue: snapshot.data!.data![0]
+                                              .bnkst_is_account_active ??
+                                          "",
+                                      decoration: inputDecoration(
+                                          "Is Account Active", ''),
+                                      activeColor: appColor,
+                                      focusColor: appColor,
+                                      onChanged: (val) {
+                                        isAccountActive = val;
+                                      },
+                                      name: "is_account_active",
+                                      options: [
+                                        FormBuilderFieldOption(value: "Yes"),
+                                        FormBuilderFieldOption(value: "No"),
+                                      ]),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                  FormBuilderTextField(
+                                      onChanged: (value) {
+                                        opentingSince = value;
+                                      },
+                                      initialValue: snapshot.data!.data![0]
+                                              .bnkst_operating_since ??
+                                          "",
+                                      name: 'opening_sonce',
+                                      decoration:
+                                          inputDecoration("Opening Since", ""),
+                                      keyboardType: TextInputType.text),
+                                  SizedBox(
+                                    height: 22,
+                                  ),
+                                ],
+                              ),
                             FormBuilderRadioGroup(
                                 initialValue: snapshot
                                     .data!.data![0].bnkst_document_stamped,
@@ -341,10 +388,9 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
                         BackToOptions(),
                         MaterialButton(
                           onPressed: () async {
+                            buildShowDialog(context);
                             formKey.currentState!.save();
-                            // if (formKey.currentState!.validate()) {
                             print(datepicker.text);
-                            // print(formKey.currentState!.value.toString());
                             print(date);
 
                             dataget = {
@@ -354,7 +400,6 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
                                   snapshot.data!.data![0].bnkst_branch,
                               "bnkst_branch_address": branchAddress ??
                                   snapshot.data!.data![0].bnkst_branch_address,
-                              // "dob": "$selectedDate.toLocal()}".split(" ")[0],
                               "bnkst_landmark": landmark ??
                                   snapshot.data!.data![0].bnkst_landmark,
                               "bnkst_officer_name": officerName ??
@@ -367,24 +412,16 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
                                   snapshot.data!.data![0].bnkst_officer_mobile,
                               "bnkst_account_no": accountNumber ??
                                   snapshot.data!.data![0].bnkst_account_no,
-
                               "bnkst_account_title": accountTitle ??
                                   snapshot.data!.data![0].bnkst_account_title,
-
                               "bnkst_is_account_active": isAccountActive ??
                                   snapshot
                                       .data!.data![0].bnkst_is_account_active,
-
                               "bnkst_operating_since": opentingSince ??
                                   snapshot.data!.data![0].bnkst_operating_since,
-
                               "bnkst_document_stamped": isDocumentStamped ??
                                   snapshot
                                       .data!.data![0].bnkst_document_stamped,
-
-                              "longitude":
-                                  currentPosition!.longitude.toString(),
-                              "latitiude": currentPosition!.latitude.toString(),
                             };
                             print(dataget);
 
@@ -395,17 +432,23 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
                             if (body["success"]) {
                               showToastApp();
                               Navigator.pop(context);
+                              Navigator.pop(context);
+                              
                             }
                           },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(color: appColor)),
+                          color: appColor.withOpacity(.5),
                           child: Row(
                             children: [
                               Text(
                                 "Submit",
-                                style: TextStyle(color: appColor),
+                                style: TextStyle(color: textColor),
                               ),
                               Icon(
                                 Icons.arrow_forward_ios,
-                                color: appColor,
+                                color: textColor,
                                 size: 15,
                               ),
                             ],
@@ -458,12 +501,10 @@ class _BankVerificationDetailsState extends State<BankVerificationDetails> {
             "${place.locality}, ${place.postalCode}, ${place.country}, ${place.subLocality}, ";
         print(currentAddress);
         _loading = false;
+        confirmLocation = true;
       });
     } catch (e) {
       print(e);
     }
   }
 }
-
-
-// 

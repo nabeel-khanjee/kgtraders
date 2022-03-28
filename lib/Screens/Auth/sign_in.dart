@@ -18,6 +18,10 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   Location location = Location();
+
+  final inputFieldColor = Color.fromARGB(40, 158, 158, 158);
+
+  TextEditingController passwordController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -29,7 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   var member_email;
   var member_password;
-  // final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool showPassword = true;
+
+  TextEditingController emaiController = TextEditingController();
 
   bool _checkLogin = true;
 
@@ -41,12 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
-
           child: Container(
-            
             padding: EdgeInsets.symmetric(vertical: 100),
             child: Column(
-              
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -55,28 +58,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     image: AssetImage(
                       "assets/kg-logo.png",
                     )),
-                SizedBox(height: 22,),
+                SizedBox(
+                  height: 22,
+                ),
                 Container(
                   margin: EdgeInsets.all(20),
                   padding: EdgeInsets.symmetric(vertical: 34),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: appColor),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: appColor.withOpacity(0.1),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3),
-                        )
-                      ]),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(height: size.height * 0.03),
                       Container(
-                        // alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Text(
                           "LOGIN",
@@ -88,76 +80,96 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: size.height * 0.03),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.symmetric(horizontal: 40),
-                        child: TextFormField(
-                            validator: (emailValue) {
-                              if (emailValue!.isEmpty) {
-                                return 'Please enter email';
-                              }
-                              member_email = emailValue;
-                              return null;
-                            },
-                            keyboardType: TextInputType.emailAddress,
-                            decoration:
-                                inputDecoration("Email", "Enter the email")),
-                      ),
-                      SizedBox(height: size.height * 0.03),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(horizontal: 40),
-                        child: TextFormField(
-                          validator: (passwordValue) {
-                            if (passwordValue!.isEmpty) {
-                              return 'Please Enter Password';
-                            }
-                            member_password = passwordValue;
-                            return null;
-                          },
-                          keyboardType: TextInputType.text,
-                          decoration:
-                              inputDecoration("Password", "Enter the password"),
-                          obscureText: true,
+                      Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: inputFieldColor,
+                                borderRadius: new BorderRadius.circular(10.0),
+                              ),
+                              child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 15, right: 15, top: 5),
+                                  child: TextFormField(
+                                      style: TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 158, 158, 158),
+                                      ),
+                                      controller: emaiController,
+                                      decoration: InputDecoration(
+                                        labelStyle: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 158, 158, 158),
+                                        ),
+                                        border: InputBorder.none,
+                                        labelText: 'Email',
+                                      ))))),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Stack(
+                          alignment: const Alignment(0, 0),
+                          children: <Widget>[
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: inputFieldColor,
+                                  borderRadius: new BorderRadius.circular(10.0),
+                                ),
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 15, right: 15, top: 5),
+                                    child: TextFormField(
+                                        controller: passwordController,
+                                        style: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 158, 158, 158),
+                                        ),
+                                        obscureText: showPassword,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            labelText: 'Password',
+                                            labelStyle: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 158, 158, 158),
+                                            ))))),
+                            Positioned(
+                                right: 15,
+                                child: IconButton(
+                                    onPressed: () {
+               
+                                      if (showPassword) {
+                                        setState(() {
+                                          showPassword = false;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          showPassword = true;
+                                        });
+                                      }
+                                    },
+                                    icon: showPassword
+                                        ? Icon(
+                                            Icons.visibility,
+                                            color: Color.fromARGB(
+                                                255, 158, 158, 158),
+                                          )
+                                        : Icon(
+                                            Icons.visibility_off,
+                                            color: Color.fromARGB(
+                                                255, 158, 158, 158),
+                                          )))
+                          ],
                         ),
                       ),
-                      SizedBox(height: size.height * 0.05),
-                     FormButton( buttonTitle: "\t\tLogin\t\t", onTap: () {
+
+                      SizedBox(height: 10),
+                      FormButton(
+                          buttonTitle: "\t\tLogin\t\t",
+                          onTap: () {
                             if (_formKey.currentState!.validate()) {
                               _login();
                             }
-                          }, iconData: Icons.login)
-                     ,
-                      // Container(
-                      //   // alignment: Alignment.centerRight,
-                      //   margin: const EdgeInsets.symmetric(
-                      //       horizontal: 40, vertical: 10),
-                      //   child: RaisedButton(
-                      //     color: appColor,
-                      //     onPressed: () {
-                      //       if (_formKey.currentState!.validate()) {
-                      //         _login();
-                      //       }
-                      //     },
-            
-                      //     // shape: RoundedRectangleBorder(
-            
-                      //     //     borderRadius: BorderRadius.circular(80.0)),
-                      //     textColor: Colors.white,
-                      //     padding: const EdgeInsets.all(0),
-                      //     child: Container(
-                      //       alignment: Alignment.center,
-                      //       height: 60.0,
-                      //       width: size.width * 0.8,
-                      //       padding: const EdgeInsets.all(0),
-                      //       child: const Text(
-                      //         "LOGIN",
-                      //         textAlign: TextAlign.center,
-                      //         style: TextStyle(fontWeight: FontWeight.bold),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                          },
+                          iconData: Icons.login),
                       Text(_checkLogin ? "" : "Username or password is invalid",
                           style: TextStyle(color: Colors.red)),
                     ],
@@ -176,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
       _checkLogin = true;
     });
-    var data = {'email': member_email, 'password': member_password};
+    var data = {'email': emaiController.text, 'password': passwordController.text};
     print(data);
 
     var res = await Network().authData(data, '/signin');
@@ -186,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (body['success']) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', json.encode(body['token']));
-      localStorage.setString('user', json.encode(body['username']));
+      localStorage.setString('user'.toString(), (body['username']));
       localStorage.setString('userid', json.encode(body['userid']));
 
       var username = body['username'];
@@ -195,15 +207,15 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => UserData(
-                  userId: userId!,
-                  userName: username!,
-                )),
+          builder: (context) => UserData(
+            userId: userId!,
+            userName: username!,
+          ),
+        ),
       );
       _checkLogin = true;
     } else {
       showToastAppFalse();
-      //(body['message']);
       _checkLogin = false;
     }
 
@@ -211,48 +223,4 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = false;
     });
   }
-/*  void logIn() async{
-
-    if(passController.text.isNotEmpty && emailController.text.isNotEmpty) {
-      var response = await http.post(Uri.parse('https://testerp.radiumpk.com/signin'),
-      body: ({
-        'email': emailController.text,
-        'password': passController.text
-      })
-      );
-      if(response.statusCode == 200) {
-        final body = jsonDecode(response.body);
-        errorSnackBar(context, 'Succefully Login ${body['']}');
-        pageRoute(body!['token']);
-       // Map<String,dynamic>user=response['data'];
-        //savePref(user['survey_id']);
-        print(savePref);
-
-
-      } else {
-        errorSnackBar(context, 'Invalid Credential');
-      }
-    }else {
-      errorSnackBar(context, 'empty');
-    }
-
-  }
-  void pageRoute(String token) async{
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString('signin', token);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) =>  UserData(),
-        ));
-
-  }
-  savePref(int survey_id) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    preferences.setInt("survey_id", survey_id);
-
-    preferences.commit();
-
-  }*/
 }

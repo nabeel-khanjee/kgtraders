@@ -50,6 +50,7 @@ dependencies:
   material_design_icons_flutter: ^5.0.6595
   dio: ^4.0.4
   progress_dialog_null_safe: ^1.0.7
+  flutter_search_bar: ^2.1.0
 
 
 flutter_native_splash:

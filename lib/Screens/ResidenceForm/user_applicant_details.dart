@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/upper_case.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
@@ -10,6 +11,8 @@ import 'package:radium_tech/Screens/ResidenceForm/verification_outcome.dart';
 import 'package:radium_tech/Services/ResidenceApi/GetData/get_applicant_details.dart';
 import 'package:radium_tech/Services/ResidenceApi/SendData/send_applicant_details.dart';
 import 'package:radium_tech/Utils/colors.dart';
+import 'package:radium_tech/Components/backToOptions.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
@@ -56,6 +59,10 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
 
   Future<GetApplicantData>? getApplicantDataFromServer;
 
+  bool confirmLocation = false;
+
+  Map<String, String>? locationData;
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
@@ -69,12 +76,11 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
       });
     }
   }
-  
 
   @override
   void initState() {
     super.initState();
-    // _getCurrentLocation();
+    _getCurrentLocation();
     getApplicantDataFromServer = GetApplicantDetails()
         .getResidenceDetails("/getapplicantdetails/${widget.surveyId}");
   }
@@ -146,36 +152,35 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
                             SizedBox(
                               height: 22,
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: appColor)),
-                              child: MaterialButton(
-                                onPressed: () async {
-                                  _selectDate(context);
-                                  setState(() {
-                                    _dob = "$selectedDate.toLocal()}"
-                                        .split(' ')[0];
-                                  });
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Date of birth",
-                                      style: TextStyle(color: appColor),
-                                    ),
-                                    Text(
-                                      _dob != null
-                                          ? "$_dob".split(' ')[0]
-                                          : snapshot.data!.data![0].dob != null
-                                              ? snapshot.data!.data![0].dob!
-                                              : "Pick your date of birth",
-                                    ),
-                                  ],
-                                ),
+                            MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(color: appColor)),
+                              color: appColor.withOpacity(.5),
+                              onPressed: () async {
+                                _selectDate(context);
+                                setState(() {
+                                  _dob =
+                                      "$selectedDate.toLocal()}".split(' ')[0];
+                                });
+                              },
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Date of birth",
+                                    style: TextStyle(color: textColor),
+                                  ),
+                                  Text(
+                                    _dob != null
+                                        ? "$_dob".split(' ')[0]
+                                        : snapshot.data!.data![0].dob != null
+                                            ? snapshot.data!.data![0].dob!
+                                            : "Pick your date of birth",
+                                    style: TextStyle(color: textColor),
+                                  ),
+                                ],
                               ),
                             ),
                             SizedBox(
@@ -242,6 +247,7 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
                               height: 22,
                             ),
                             FormBuilderTextField(
+                                maxLines: 5,
                                 onChanged: (value) {
                                   address = value;
                                 },
@@ -259,6 +265,46 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
                                   ? currentAddress!
                                   : "Location",
                               style: TextStyle(color: appColor),
+                            ),
+                            Visibility(
+                              visible: confirmLocation,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      side: BorderSide(color: appColor)),
+                                  color: appColor.withOpacity(.5),
+                                  onPressed: () async {
+                                    locationData = {
+                                      "longitude":
+                                          currentPosition!.longitude.toString(),
+                                      "latitiude":
+                                          currentPosition!.latitude.toString(),
+                                    };
+                                    print(locationData);
+                                    var res = await SendApplicantDetails()
+                                        .sendApplicantDetails(locationData,
+                                            "/updateCordinates/${widget.surveyId}");
+                                    var body = jsonDecode(res.body);
+                                    if (body["success"]) {
+                                      showToastApp();
+                                    }
+                                  },
+                                  child: Container(
+                                      height: 50,
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: appColor),
+                                      ),
+                                      child: Center(
+                                          child: Text(
+                                        "Confirm Location",
+                                        style: TextStyle(color: textColor),
+                                      ))),
+                                ),
+                              ),
                             ),
                             SizedBox(
                               height: 22,
@@ -282,10 +328,9 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
                         BackToOptions(),
                         MaterialButton(
                           onPressed: () async {
+                            buildShowDialog(context);
                             formKey.currentState!.save();
-                            // if (formKey.currentState!.validate()) {
                             print(datepicker.text);
-                            // print(formKey.currentState!.value.toString());
                             print(date);
 
                             dataget = {
@@ -306,9 +351,6 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
                                   snapshot.data!.data![0].residence_address,
                               "landmark":
                                   landmark ?? snapshot.data!.data![0].landmark,
-                              "longitude":
-                                  currentPosition!.longitude.toString(),
-                              "latitiude": currentPosition!.latitude.toString(),
                             };
                             print(dataget);
 
@@ -319,17 +361,22 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
                             if (body["success"]) {
                               showToastApp();
                               Navigator.pop(context);
+                              Navigator.pop(context);
                             }
                           },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(color: appColor)),
+                          color: appColor.withOpacity(.5),
                           child: Row(
                             children: [
                               Text(
                                 "Submit",
-                                style: TextStyle(color: appColor),
+                                style: TextStyle(color: textColor),
                               ),
                               Icon(
                                 Icons.arrow_forward_ios,
-                                color: appColor,
+                                color: textColor,
                                 size: 15,
                               ),
                             ],
@@ -353,22 +400,22 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
     );
   }
 
-  // _getCurrentLocation() async {
-  //   setState(() {
-  //     _loading = true;
-  //   });
-  //   await Geolocator.getCurrentPosition(
-  //           desiredAccuracy: LocationAccuracy.best,
-  //           forceAndroidLocationManager: true)
-  //       .then((Position position) {
-  //     setState(() {
-  //       currentPosition = position;
-  //       _getAddressFromLatLng();
-  //     });
-  //   }).catchError((e) {
-  //     print(e);
-  //   });
-  // }
+  _getCurrentLocation() async {
+    setState(() {
+      _loading = true;
+    });
+    await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.best,
+            forceAndroidLocationManager: true)
+        .then((Position position) {
+      setState(() {
+        currentPosition = position;
+        _getAddressFromLatLng();
+      });
+    }).catchError((e) {
+      print(e);
+    });
+  }
 
   _getAddressFromLatLng() async {
     try {
@@ -382,12 +429,10 @@ class _UserApplicantDetailState extends State<UserApplicantDetail> {
             "${place.locality}, ${place.postalCode}, ${place.country}, ${place.subLocality}, ";
         print(currentAddress);
         _loading = false;
+        confirmLocation = true;
       });
     } catch (e) {
       print(e);
     }
   }
 }
-
-
-// 

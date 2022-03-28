@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/show_toast.dart';
 import 'package:radium_tech/Model/WorkPlaceModel/get_market_check_1_data.dart';
 import 'package:radium_tech/Screens/ResidenceForm/verification_outcome.dart';
 import 'package:radium_tech/Services/WorkplaceApi/GetData/get_market_check_1_details.dart';
 import 'package:radium_tech/Services/WorkplaceApi/SendData/send_market_check_1.dart';
 import 'package:radium_tech/Utils/colors.dart';
+import 'package:radium_tech/Components/backToOptions.dart';
 
 class MarketCheck1 extends StatefulWidget {
   const MarketCheck1(
@@ -51,7 +53,6 @@ class _MarketCheck1State extends State<MarketCheck1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appColor,
         title: Text(widget.apptitle),
       ),
       body: SingleChildScrollView(
@@ -92,6 +93,7 @@ class _MarketCheck1State extends State<MarketCheck1> {
                               height: 22,
                             ),
                             FormBuilderTextField(
+                                maxLines: 5,
                                 initialValue:
                                     snapshot.data!.data![0].mc_one_addrees,
                                 name: 'mc_one_addrees',
@@ -307,6 +309,7 @@ class _MarketCheck1State extends State<MarketCheck1> {
                           BackToOptions(),
                           MaterialButton(
                             onPressed: () async {
+                              buildShowDialog(context);
                               formKey.currentState!.save();
                               // if (formKey.currentState!.validate()) {
                               print(formKey.currentState!.value);
@@ -317,6 +320,7 @@ class _MarketCheck1State extends State<MarketCheck1> {
                               var body = jsonDecode(res.body);
                               if (body["success"]) {
                                 showToastApp();
+                                Navigator.pop(context);
                                 Navigator.pop(context);
                               } else {
                                 showToastAppFalse();
@@ -335,15 +339,19 @@ class _MarketCheck1State extends State<MarketCheck1> {
                               //   print("validation failed");
                               // }
                             },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(color: appColor)),
+                            color: appColor.withOpacity(.5),
                             child: Row(
                               children: [
                                 Text(
                                   "Submit",
-                                  style: TextStyle(color: appColor),
+                                  style: TextStyle(color: textColor),
                                 ),
                                 Icon(
                                   Icons.arrow_forward_ios,
-                                  color: appColor,
+                                  color: textColor,
                                   size: 15,
                                 ),
                               ],

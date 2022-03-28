@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:radium_tech/Components/backToOptions.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/show_toast.dart';
 import 'package:radium_tech/Model/ResidenceModel/get_neighbour_2_data.dart';
-import 'package:radium_tech/Screens/ResidenceForm/verification_outcome.dart';
 import 'package:radium_tech/Services/ResidenceApi/GetData/get_neighbour_2_details.dart';
 import 'package:radium_tech/Services/ResidenceApi/SendData/send_neighbour_2_details.dart';
 import 'package:radium_tech/Utils/colors.dart';
@@ -34,7 +35,6 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appColor,
         title: Text(widget.apptitle),
       ),
       bottomNavigationBar: Row(
@@ -43,8 +43,8 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
           BackToOptions(),
           MaterialButton(
             onPressed: () async {
+              buildShowDialog(context);
               formKey.currentState!.save();
-              // if (formKey.currentState!.validate()) {
               print(formKey.currentState!.value);
               var data = formKey.currentState!.value;
               var res = await SendNeighbour2Details().sendNeighbour2Details(
@@ -53,22 +53,27 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
               if (body["success"]) {
                 showToastApp();
                 Navigator.pop(context);
+                Navigator.pop(context);
+                
               } else {
                 showToastAppFalse();
               }
             },
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: appColor)),
+            color: appColor.withOpacity(.5),
             child: Row(
               children: [
-          Text(
-              "Submit",
-              style: TextStyle(color: appColor),
-            ),
-          Icon(
-              Icons.arrow_forward_ios,
-              color: appColor,
-              size: 15,
-            ),
-         
+                Text(
+                  "Submit",
+                  style: TextStyle(color: textColor),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: textColor,
+                  size: 15,
+                ),
               ],
             ),
           ),
@@ -99,33 +104,17 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
                                   name: 'name',
                                   decoration: inputDecoration(
                                       "Neighbout Name", "Enter Neighbour Name"),
-                                  // onChanged: _onChanged,
-                                  // valueTransformer: (text) => num.tryParse(text),
-                                  // validator: FormBuilderValidators.compose([
-                                  //   FormBuilderValidators.required(context,
-                                  //       errorText:
-                                  //           "Please Enter The Neighbour Name"),
-                                  //   FormBuilderValidators.min(context, 70,
-                                  //       errorText: "Max Range is 70"),
-                                  // ]),
                                   keyboardType: TextInputType.text),
                               SizedBox(
                                 height: 22,
                               ),
                               FormBuilderTextField(
+                                  maxLines: 5,
                                   initialValue: snapshot.data!.data![0].address,
                                   name: 'address',
                                   decoration: inputDecoration(
                                       "Neighbour Address",
-                                      "Enter Neighbour Address"), // onChanged: _onChanged,
-                                  // valueTransformer: (text) => num.tryParse(text),
-                                  // validator: FormBuilderValidators.compose([
-                                  //   FormBuilderValidators.required(context,
-                                  //       errorText:
-                                  //           "Please Enter The Neighbour Address  "),
-                                  //   FormBuilderValidators.min(context, 70,
-                                  //       errorText: "Max Range is 70"),
-                                  // ]),
+                                      "Enter Neighbour Address"),
                                   keyboardType: TextInputType.text),
                               SizedBox(
                                 height: 22,
@@ -134,8 +123,6 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
                                 initialValue:
                                     snapshot.data!.data![0].knows_applicant,
                                 name: "knows_applicant",
-                                // validator: FormBuilderValidators.required(context,
-                                //     errorText: "Please Select"),
                                 decoration: inputDecoration(
                                     "Knows Applicant", "hintText"),
                                 activeColor: appColor,
@@ -151,16 +138,7 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
                                       snapshot.data!.data![0].knows_since,
                                   name: 'knows_since',
                                   decoration: inputDecoration(
-                                      "Know Applicant Since",
-                                      "Years"), // onChanged: _onChanged,
-                                  // valueTransformer: (text) => num.tryParse(text),
-                                  // validator: FormBuilderValidators.compose([
-                                  //   FormBuilderValidators.required(context,
-                                  //       errorText:
-                                  //           "Please Enter The Knowing Years"),
-                                  //   FormBuilderValidators.min(context, 70,
-                                  //       errorText: "Max Range is 70"),
-                                  // ]),
+                                      "Know Applicant Since", "Years"),
                                   keyboardType: TextInputType.text),
                               SizedBox(
                                 height: 22,
@@ -168,8 +146,6 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
                               FormBuilderRadioGroup(
                                 initialValue: snapshot.data!.data![0].comments,
                                 name: "comments",
-                                // validator: FormBuilderValidators.required(context,
-                                //     errorText: "Please Select"),
                                 decoration: inputDecoration(
                                     "Neighbor Comments", "hintText"),
                                 activeColor: appColor,

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:radium_tech/Api/apiurl.dart';
 import 'package:radium_tech/Components/input_decoration_text.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Components/show_toast.dart';
 import 'package:radium_tech/Global/global.dart';
 import 'package:radium_tech/Model/ResidenceModel/get_verification_outcome_data.dart';
 import 'package:radium_tech/Utils/colors.dart';
+import 'package:radium_tech/Components/backToOptions.dart';
 
 class VerificationOutcomes extends StatefulWidget {
   final surid;
@@ -34,7 +36,6 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
   Future<GetVerificationOutcome>? verificationOuthcomeData;
   @override
   void initState() {
-    // TODO: implement initState
     dropdownvalue = Surveyor_list[0].reportStatus == "Negative"
         ? positive[0]
         : Surveyor_list[0].comments;
@@ -98,10 +99,8 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appColor,
         title: const Text(
           "Verification Outcome",
-          style: TextStyle(color: Colors.white),
         ),
       ),
       bottomNavigationBar: Row(
@@ -110,6 +109,7 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
           BackToOptions(),
           MaterialButton(
             onPressed: () {
+              buildShowDialog(context);
               Api.SendSorveyorResult(
                   widget.surid,
                   _surveyorname.text,
@@ -117,16 +117,22 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
                   status == "Positive" ? dropdownvalue : dropdownvalue1,
                   _remarks.text);
               waittosendData();
+              Navigator.pop(context);
             },
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: appColor)),
+            color: appColor.withOpacity(.5),
             child: Row(
               children: [
                 Text(
-                  "Save",
-                  style: TextStyle(color: appColor),
+                  "Submit",
+                  style: TextStyle(color: textColor),
                 ),
                 Icon(
                   Icons.arrow_forward_ios_outlined,
                   size: 13,
+                  color: textColor,
                 ),
               ],
             ),
@@ -162,77 +168,74 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: appColor),
                   ),
-                  child: Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Container(
-                          width: 70,
-                          child: Text(
-                            "Report Status: ",
-                            maxLines: 2,
-                            style: TextStyle(color: appColor),
-                          )),
-                      Spacer(),
-                      Transform.scale(
-                        scale: 1,
-                        child: Checkbox(
-                          value: Surveyor_list[0].reportStatus == "Positive"
-                              ? test
-                              : checkBoxValue,
-
-                          activeColor: appColor,
-
-                          // border: BorderSide(color: Colors.white),
-                          focusColor: appColor,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkBoxValue = value!;
-                              Surveyor_list[0].reportStatus = "Positive";
-                              checkBoxValue1 = false;
-                              _isVisible = true;
-                              _Visible = false;
-                              status = "Positive";
-                            });
-                          },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
                         ),
-                      ),
-                      Text(
-                        "Positive",
-                        style: TextStyle(color: appColor),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Transform.scale(
-                        scale: 1,
-                        child: Checkbox(
-                          value: Surveyor_list[0].reportStatus == "Negative"
-                              ? test
-                              : checkBoxValue1,
-
-                          activeColor: appColor,
-
-                          // border: BorderSide(color: Colors.white),
-                          focusColor: appColor,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              checkBoxValue1 = value!;
-                              Surveyor_list[0].reportStatus = "Negative";
-                              checkBoxValue = false;
-                              _Visible = true;
-                              _isVisible = false;
-                              status = "Negative";
-                            });
-                          },
+                        Container(
+                            width: 70,
+                            child: Text(
+                              "Report Status: ",
+                              maxLines: 2,
+                              style: TextStyle(color: appColor),
+                            )),
+                        Spacer(),
+                        Transform.scale(
+                          scale: 1,
+                          child: Checkbox(
+                            value: Surveyor_list[0].reportStatus == "Positive"
+                                ? test
+                                : checkBoxValue,
+                            activeColor: appColor,
+                            focusColor: appColor,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkBoxValue = value!;
+                                Surveyor_list[0].reportStatus = "Positive";
+                                checkBoxValue1 = false;
+                                _isVisible = true;
+                                _Visible = false;
+                                status = "Positive";
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Negative",
-                        style: TextStyle(color: appColor),
-                      ),
-                    ],
+                        Text(
+                          "Positive",
+                          style: TextStyle(color: appColor),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Transform.scale(
+                          scale: 1,
+                          child: Checkbox(
+                            value: Surveyor_list[0].reportStatus == "Negative"
+                                ? test
+                                : checkBoxValue1,
+                            activeColor: appColor,
+                            focusColor: appColor,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                checkBoxValue1 = value!;
+                                Surveyor_list[0].reportStatus = "Negative";
+                                checkBoxValue = false;
+                                _Visible = true;
+                                _isVisible = false;
+                                status = "Negative";
+                              });
+                            },
+                          ),
+                        ),
+                        Text(
+                          "Negative",
+                          style: TextStyle(color: appColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -248,44 +251,35 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
                       Positioned(
                         bottom: 0,
                         child: Container(
-                          // width: MediaQuery.of(context).size.width / 1.06,
                           height: 50,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(20)),
                             border: Border.all(color: appColor, width: 1.0),
                           ),
-                          child: Container(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
-                              child: DropdownButtonHideUnderline(
-                                child: FittedBox(
-                                  child: DropdownButton(
-                                    borderRadius: BorderRadius.circular(10),
-                                    // Initial Value
-                                    value: dropdownvalue,
-
-                                    // Down Arrow Icon
-                                    icon: const Padding(
-                                      padding: EdgeInsets.only(left: 120),
-                                      child: Icon(Icons.keyboard_arrow_down),
-                                    ),
-
-                                    // Array list of items
-                                    items: positive.map((String items) {
-                                      return DropdownMenuItem(
-                                        value: items,
-                                        child: Text(items),
-                                      );
-                                    }).toList(),
-                                    // After selecting the desired option,it will
-                                    // change button value to selected value
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        dropdownvalue = newValue!;
-                                      });
-                                    },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: DropdownButtonHideUnderline(
+                              child: FittedBox(
+                                child: DropdownButton(
+                                  itemHeight: 60,
+                                  menuMaxHeight: 300,
+                                  borderRadius: BorderRadius.circular(10),
+                                  value: dropdownvalue,
+                                  icon: const Padding(
+                                    padding: EdgeInsets.only(left: 120),
+                                    child: Icon(Icons.keyboard_arrow_down),
                                   ),
+                                  items: positive.map((String items) {
+                                    return DropdownMenuItem(
+                                      value: items,
+                                      child: Text(items),
+                                    );
+                                  }).toList(),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropdownvalue = newValue!;
+                                    });
+                                  },
                                 ),
                               ),
                             ),
@@ -328,24 +322,19 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
                                 child: FittedBox(
                                   child: DropdownButton(
                                     borderRadius: BorderRadius.circular(10),
-                                    // Initial Value
                                     value: dropdownvalue1,
-
-                                    // Down Arrow Icon
+                                    itemHeight: 60,
+                                    menuMaxHeight: 300,
                                     icon: const Padding(
                                       padding: EdgeInsets.only(left: 120),
                                       child: Icon(Icons.keyboard_arrow_down),
                                     ),
-
-                                    // Array list of items
                                     items: negative.map((String items) {
                                       return DropdownMenuItem(
                                         value: items,
                                         child: Text(items),
                                       );
                                     }).toList(),
-                                    // After selecting the desired option,it will
-                                    // change button value to selected value
                                     onChanged: (String? newValue) {
                                       setState(() {
                                         dropdownvalue1 = newValue!;
@@ -371,21 +360,6 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
                     ],
                   ),
                 ),
-                // const SizedBox(
-                //   height: 10,
-                // ),
-                // TextFormField(
-                //   controller: _comments,
-                //   decoration:  InputDecoration(
-                //       labelText: 'Comments',
-                //       hintText: Surveyor_list[0].comments,
-                //       border: const OutlineInputBorder(),
-                //       enabledBorder: const OutlineInputBorder(
-                //         borderSide: BorderSide(
-                //           color: appColor,
-                //         ),
-                //       )),
-                // ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -404,37 +378,6 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class BackToOptions extends StatelessWidget {
-  const BackToOptions({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialButton(
-      onPressed: () {
-        Navigator.pop(context);
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (context) => const ResidenceForms()),
-        // );
-      },
-      child: Row(
-        children: [
-          Icon(
-            Icons.arrow_back_ios_outlined,
-            size: 13,
-          ),
-          Text(
-            "Back To Options",
-            style: TextStyle(color: appColor),
-          ),
-        ],
       ),
     );
   }

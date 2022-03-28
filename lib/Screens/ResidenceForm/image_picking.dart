@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:radium_tech/Components/showLoderPauseScreen.dart';
 import 'package:radium_tech/Global/global.dart';
 import 'package:radium_tech/Model/ResidenceModel/get_image_data.dart';
 import 'package:radium_tech/Utils/colors.dart';
@@ -715,16 +716,7 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
         });
   }
 
-  buildShowDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-  }
+  
 
   void waittoaddImage() async {
     buildShowDialog(context);
@@ -741,8 +733,6 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
             backgroundColor: appColor,
             textColor: Colors.white,
             fontSize: 16.0);
-        // Navigator.pushReplacement(
-        //     context, MaterialPageRoute(builder: (context) => Loginn()));
       } else if (success == 'error') {
         clickstatus = true;
 
@@ -766,10 +756,8 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appColor,
         title: const Text(
           "Pictures",
-          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Container(
@@ -781,7 +769,6 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
               if (snapshot.hasData) {
                 return SingleChildScrollView(
                   child: Container(
-                    // height: MediaQuery.of(context).size.height / 1.25,
                     child: Column(
                       children: [
                         Padding(
@@ -839,9 +826,21 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                         )),
                                     Align(
                                       alignment: Alignment.bottomRight,
-                                      child: CircleAvatar(
-                                        radius: 18,
-                                        backgroundColor: appColor,
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: appColor),
+                                            color: appColor.withOpacity(.5),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color:
+                                                      appColor.withOpacity(.5),
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 5))
+                                            ]),
                                         child: InkWell(
                                           onTap: () {
                                             _showChoiceDialog1(context);
@@ -868,9 +867,15 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                   height: 30,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: appColor,
-                                  ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: appColor.withOpacity(0.5),
+                                            blurRadius: 5,
+                                            offset: Offset(0, 5))
+                                      ],
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: appColor.withOpacity(0.5),
+                                      border: Border.all(color: appColor)),
                                   child: const Center(
                                       child: Text(
                                     'Save',
@@ -938,9 +943,21 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                         )),
                                     Align(
                                       alignment: Alignment.bottomRight,
-                                      child: CircleAvatar(
-                                        radius: 18,
-                                        backgroundColor: appColor,
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: appColor),
+                                            color: appColor.withOpacity(.5),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color:
+                                                      appColor.withOpacity(.5),
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 5))
+                                            ]),
                                         child: InkWell(
                                           onTap: () {
                                             _showChoiceDialog2(context);
@@ -967,9 +984,15 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                   height: 30,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: appColor,
-                                  ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: appColor.withOpacity(0.5),
+                                            blurRadius: 5,
+                                            offset: Offset(0, 5))
+                                      ],
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: appColor.withOpacity(0.5),
+                                      border: Border.all(color: appColor)),
                                   child: const Center(
                                       child: Text(
                                     'Save',
@@ -1037,9 +1060,21 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                         )),
                                     Align(
                                       alignment: Alignment.bottomRight,
-                                      child: CircleAvatar(
-                                        radius: 18,
-                                        backgroundColor: appColor,
+                                      child: Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: appColor),
+                                            color: appColor.withOpacity(.5),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color:
+                                                      appColor.withOpacity(.5),
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 5))
+                                            ]),
                                         child: InkWell(
                                           onTap: () {
                                             _showChoiceDialog3(context);
@@ -1066,9 +1101,15 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                   height: 30,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: appColor,
-                                  ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: appColor.withOpacity(0.5),
+                                            blurRadius: 5,
+                                            offset: Offset(0, 5))
+                                      ],
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: appColor.withOpacity(0.5),
+                                      border: Border.all(color: appColor)),
                                   child: const Center(
                                       child: Text(
                                     'Save',
@@ -1139,9 +1180,22 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                             )),
                                         Align(
                                           alignment: Alignment.bottomRight,
-                                          child: CircleAvatar(
-                                            radius: 18,
-                                            backgroundColor: appColor,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                                border:
+                                                    Border.all(color: appColor),
+                                                color: appColor.withOpacity(.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: appColor
+                                                          .withOpacity(.5),
+                                                      blurRadius: 5,
+                                                      offset: Offset(0, 5))
+                                                ]),
                                             child: InkWell(
                                               onTap: () {
                                                 _showChoiceDialog4(context);
@@ -1168,9 +1222,17 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                       height: 30,
                                       width: 50,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: appColor,
-                                      ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    appColor.withOpacity(0.5),
+                                                blurRadius: 5,
+                                                offset: Offset(0, 5))
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: appColor.withOpacity(0.5),
+                                          border: Border.all(color: appColor)),
                                       child: const Center(
                                           child: Text(
                                         'Save',
@@ -1239,9 +1301,22 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                             )),
                                         Align(
                                           alignment: Alignment.bottomRight,
-                                          child: CircleAvatar(
-                                            radius: 18,
-                                            backgroundColor: appColor,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                                border:
+                                                    Border.all(color: appColor),
+                                                color: appColor.withOpacity(.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: appColor
+                                                          .withOpacity(.5),
+                                                      blurRadius: 5,
+                                                      offset: Offset(0, 5))
+                                                ]),
                                             child: InkWell(
                                               onTap: () {
                                                 _showChoiceDialog5(context);
@@ -1268,9 +1343,17 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                       height: 30,
                                       width: 50,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: appColor,
-                                      ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    appColor.withOpacity(0.5),
+                                                blurRadius: 5,
+                                                offset: Offset(0, 5))
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: appColor.withOpacity(0.5),
+                                          border: Border.all(color: appColor)),
                                       child: const Center(
                                           child: Text(
                                         'Save',
@@ -1339,9 +1422,22 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                             )),
                                         Align(
                                           alignment: Alignment.bottomRight,
-                                          child: CircleAvatar(
-                                            radius: 18,
-                                            backgroundColor: appColor,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                                border:
+                                                    Border.all(color: appColor),
+                                                color: appColor.withOpacity(.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: appColor
+                                                          .withOpacity(.5),
+                                                      blurRadius: 5,
+                                                      offset: Offset(0, 5))
+                                                ]),
                                             child: InkWell(
                                               onTap: () {
                                                 _showChoiceDialog6(context);
@@ -1368,9 +1464,17 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                       height: 30,
                                       width: 50,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: appColor,
-                                      ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    appColor.withOpacity(0.5),
+                                                blurRadius: 5,
+                                                offset: Offset(0, 5))
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: appColor.withOpacity(0.5),
+                                          border: Border.all(color: appColor)),
                                       child: const Center(
                                           child: Text(
                                         'Save',
@@ -1439,9 +1543,22 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                             )),
                                         Align(
                                           alignment: Alignment.bottomRight,
-                                          child: CircleAvatar(
-                                            radius: 18,
-                                            backgroundColor: appColor,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                                border:
+                                                    Border.all(color: appColor),
+                                                color: appColor.withOpacity(.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: appColor
+                                                          .withOpacity(.5),
+                                                      blurRadius: 5,
+                                                      offset: Offset(0, 5))
+                                                ]),
                                             child: InkWell(
                                               onTap: () {
                                                 _showChoiceDialog7(context);
@@ -1468,9 +1585,17 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                       height: 30,
                                       width: 50,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: appColor,
-                                      ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    appColor.withOpacity(0.5),
+                                                blurRadius: 5,
+                                                offset: Offset(0, 5))
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: appColor.withOpacity(0.5),
+                                          border: Border.all(color: appColor)),
                                       child: const Center(
                                           child: Text(
                                         'Save',
@@ -1539,9 +1664,22 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                             )),
                                         Align(
                                           alignment: Alignment.bottomRight,
-                                          child: CircleAvatar(
-                                            radius: 18,
-                                            backgroundColor: appColor,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                                border:
+                                                    Border.all(color: appColor),
+                                                color: appColor.withOpacity(.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: appColor
+                                                          .withOpacity(.5),
+                                                      blurRadius: 5,
+                                                      offset: Offset(0, 5))
+                                                ]),
                                             child: InkWell(
                                               onTap: () {
                                                 _showChoiceDialog8(context);
@@ -1568,9 +1706,17 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                       height: 30,
                                       width: 50,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: appColor,
-                                      ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    appColor.withOpacity(0.5),
+                                                blurRadius: 5,
+                                                offset: Offset(0, 5))
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: appColor.withOpacity(0.5),
+                                          border: Border.all(color: appColor)),
                                       child: const Center(
                                           child: Text(
                                         'Save',
@@ -1639,9 +1785,22 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                             )),
                                         Align(
                                           alignment: Alignment.bottomRight,
-                                          child: CircleAvatar(
-                                            radius: 18,
-                                            backgroundColor: appColor,
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            decoration: BoxDecoration(
+                                                border:
+                                                    Border.all(color: appColor),
+                                                color: appColor.withOpacity(.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: appColor
+                                                          .withOpacity(.5),
+                                                      blurRadius: 5,
+                                                      offset: Offset(0, 5))
+                                                ]),
                                             child: InkWell(
                                               onTap: () {
                                                 _showChoiceDialog9(context);
@@ -1668,12 +1827,20 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                                       height: 30,
                                       width: 50,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: appColor,
-                                      ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    appColor.withOpacity(0.5),
+                                                blurRadius: 5,
+                                                offset: Offset(0, 5))
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: appColor.withOpacity(0.5),
+                                          border: Border.all(color: appColor)),
                                       child: const Center(
                                           child: Text(
-                                        'Save',
+                                        'Submit',
                                         style: TextStyle(
                                           color: Colors.white,
                                         ),
@@ -1689,7 +1856,10 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
                   ),
                 );
               } else {
-                return CircularProgressIndicator();
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: appColor,
+                ));
               }
             },
           ),

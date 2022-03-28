@@ -12,6 +12,31 @@ List<ResidenceDetail> ResidenceDetail_list = [];
 List<NeighborOneDetail> Neighborone_list = [];
 List<NeighborTwoDetail> Neighbortwo_list = [];
 List<SurveyorDetail> Surveyor_list = [];
+List<WelcomeDetails> Welcome_List = [];
+
+class WelcomeDetails {
+  int? surveyId;
+  String? applicantName;
+  String? region;
+  String? type;
+  String? applicantContact;
+  String? bankIcon;
+  String? bankImg;
+  int? isHr;
+  int? isSlip;
+
+  WelcomeDetails({
+    this.surveyId,
+    this.applicantName,
+    this.region,
+    this.type,
+    this.applicantContact,
+    this.bankIcon,
+    this.bankImg,
+    this.isHr,
+    this.isSlip,
+  });
+}
 
 class GetWorkplace_ListDetails {
   int? job_id;

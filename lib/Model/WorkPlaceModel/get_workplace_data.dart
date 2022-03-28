@@ -63,6 +63,7 @@ class Data {
       this.wp_business_line,
       this.wp_establish_time,
       this.wp_is_government_employee,
+      this.is_employee,
       this.wp_premissi_rent});
 
   int? job_id;
@@ -97,9 +98,11 @@ class Data {
   String? wp_established_since;
   String? wp_business_line;
   String? wp_is_government_employee;
+  int? is_employee;
   String? wp_premissi_rent;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
+    is_employee:json['is_employee'],
         wp_premissi_rent: json['wp_premissi_rent'],
         wp_is_government_employee: json['wp_is_government_employee'],
         wp_establish_time: json['wp_establish_time'],
@@ -135,6 +138,7 @@ class Data {
       );
 
   Map<String, dynamic> toJson() => {
+    'is_employee':is_employee,
         'wp_premissi_rent': wp_premissi_rent,
         'wp_is_government_employee': wp_is_government_employee,
         "job_id": job_id,

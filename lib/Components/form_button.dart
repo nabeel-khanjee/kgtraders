@@ -19,28 +19,30 @@ class FormButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: appColor.withOpacity(.5),
           border: Border.all(color: appColor),
           boxShadow: [
             BoxShadow(
-              color: appColor.withOpacity(0.1),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3),
+              color: appColor.withOpacity(0.5),
+              blurRadius: 5,
+              offset: Offset(0, 5),
             )
           ],
-          borderRadius: BorderRadius.circular(30)),
+          borderRadius: BorderRadius.circular(10)),
       child: FlatButton.icon(
         onPressed: onTap,
-        icon: Icon(
+        icon:
+          Icon(
           iconData,
-          color: appColor,
+          color: textColor,
         ),
-        label: Text(
+        label:Text(
           buttonTitle,
-          style: TextStyle(color: appColor, fontWeight: FontWeight.bold),
+          style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+        ) ,
+      
         ),
-      ),
+      
     );
   }
 }
