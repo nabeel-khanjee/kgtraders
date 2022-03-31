@@ -756,7 +756,12 @@ class _PhotoGraphsState extends State<PhotoGraphs> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
+      title: const Text(
           "Pictures",
         ),
       ),

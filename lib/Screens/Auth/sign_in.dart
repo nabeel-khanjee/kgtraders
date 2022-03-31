@@ -44,138 +44,160 @@ class _LoginScreenState extends State<LoginScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 100),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image(
-                    width: size.width * 0.6,
-                    image: AssetImage(
-                      "assets/kg-logo.png",
-                    )),
-                SizedBox(
-                  height: 22,
-                ),
-                Container(
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.symmetric(vertical: 34),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(height: size.height * 0.03),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: Text(
-                          "LOGIN",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: appColor,
-                              fontSize: 36),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      SizedBox(height: size.height * 0.03),
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                color: inputFieldColor,
-                                borderRadius: new BorderRadius.circular(10.0),
-                              ),
-                              child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 15, right: 15, top: 5),
-                                  child: TextFormField(
-                                      style: TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 158, 158, 158),
-                                      ),
-                                      controller: emaiController,
-                                      decoration: InputDecoration(
-                                        labelStyle: TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 158, 158, 158),
-                                        ),
-                                        border: InputBorder.none,
-                                        labelText: 'Email',
-                                      ))))),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Stack(
-                          alignment: const Alignment(0, 0),
-                          children: <Widget>[
-                            Container(
-                                decoration: BoxDecoration(
-                                  color: inputFieldColor,
-                                  borderRadius: new BorderRadius.circular(10.0),
-                                ),
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 15, right: 15, top: 5),
-                                    child: TextFormField(
-                                        controller: passwordController,
-                                        style: TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 158, 158, 158),
-                                        ),
-                                        obscureText: showPassword,
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            labelText: 'Password',
-                                            labelStyle: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 158, 158, 158),
-                                            ))))),
-                            Positioned(
-                                right: 15,
-                                child: IconButton(
-                                    onPressed: () {
-               
-                                      if (showPassword) {
-                                        setState(() {
-                                          showPassword = false;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          showPassword = true;
-                                        });
-                                      }
-                                    },
-                                    icon: showPassword
-                                        ? Icon(
-                                            Icons.visibility,
-                                            color: Color.fromARGB(
-                                                255, 158, 158, 158),
-                                          )
-                                        : Icon(
-                                            Icons.visibility_off,
-                                            color: Color.fromARGB(
-                                                255, 158, 158, 158),
-                                          )))
-                          ],
-                        ),
-                      ),
+      body: Container(
+        decoration: BoxDecoration(
+          
+          image: DecorationImage(
 
-                      SizedBox(height: 10),
-                      FormButton(
-                          buttonTitle: "\t\tLogin\t\t",
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              _login();
-                            }
-                          },
-                          iconData: Icons.login),
-                      Text(_checkLogin ? "" : "Username or password is invalid",
-                          style: TextStyle(color: Colors.red)),
-                    ],
+            fit: BoxFit.fitHeight,
+
+            image: AssetImage(
+
+              
+              'assets/photo-1519602985774-5ca448b50061.jpg'
+              ),
+              
+              )),
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 200),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image(
+                      width: size.width * 0.6,
+                      image: AssetImage(
+                        "assets/kg-logo.png",
+                      )),
+                  SizedBox(
+                    height: 22,
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Card(
+                      elevation: 50,
+                      shadowColor: appColor.withOpacity(0.5),
+                      // color: c.withOpacity(.5),
+                      color: Colors.white.withOpacity(.6),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(height: size.height * 0.03),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: Text(
+                              "LOGIN",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: appColor,
+                                  fontSize: 36),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          SizedBox(height: size.height * 0.03),
+                          Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    color: inputFieldColor,
+                                    borderRadius: new BorderRadius.circular(10.0),
+                                  ),
+                                  child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 15, right: 15, top: 5),
+                                      child: TextFormField(
+                                          style: TextStyle(
+                                            color:
+                                                appColor,
+                                          ),
+                                          controller: emaiController,
+                                          decoration: InputDecoration(
+                                            labelStyle: TextStyle(
+                                              color: appColor,
+                                            ),
+                                            prefixIcon: Icon(Icons.email,
+                                               color: appColor),
+                                            border: InputBorder.none,
+                                            labelText: 'Email',
+                                          ))))),
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Stack(
+                              alignment: const Alignment(0, 0),
+                              children: <Widget>[
+                                Container(
+                                    decoration: BoxDecoration(
+                                      color: inputFieldColor,
+                                      borderRadius: new BorderRadius.circular(10.0),
+                                    ),
+                                    child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 15, right: 15, top: 5),
+                                        child: TextFormField(
+                                            controller: passwordController,
+                                            style: TextStyle(
+                                              color: appColor,
+                                            ),
+                                            obscureText: showPassword,
+                                            decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                               prefixIcon: Icon(Icons.lock,
+                                               color: appColor),
+                                             labelText: 'Password',
+                                                labelStyle: TextStyle(
+                                                  color:appColor,
+                                                ))))),
+                                Positioned(
+                                    right: 15,
+                                    child: IconButton(
+                                        onPressed: () {
+                                     
+                                          if (showPassword) {
+                                            setState(() {
+                                              showPassword = false;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              showPassword = true;
+                                            });
+                                          }
+                                        },
+                                        icon: showPassword
+                                            ? Icon(
+                                                Icons.visibility,
+                                               color: appColor
+                                              )
+                                            : Icon(
+                                                Icons.visibility_off,
+                                               color: appColor
+                                              )))
+                              ],
+                            ),
+                          ),
+                    
+                          SizedBox(height: 10),
+                          FormButton(
+                              buttonTitle: "\t\tLogin\t\t",
+                              onTap: () {
+                                if (_formKey.currentState!.validate()) {
+                                  _login();
+                                }
+                              },
+                              iconData: Icons.login),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(_checkLogin ? "" : "Username or password is invalid",
+                                style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

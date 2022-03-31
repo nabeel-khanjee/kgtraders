@@ -312,6 +312,7 @@ class _VerificationOutcomesWorkPlaceState
   var test = true;
   bool _isVisible = Surveyor_list[0].reportStatus == "Positive" ? true : false;
   bool _Visible = Surveyor_list[0].reportStatus == "Negative" ? true : false;
+
   final _surveyorname = TextEditingController();
   final _comments = TextEditingController();
   final _remarks = TextEditingController();
@@ -329,6 +330,7 @@ class _VerificationOutcomesWorkPlaceState
     dropdownvalue1 = Surveyor_list[0].reportStatus == "Positive"
         ? negative[0]
         : Surveyor_list[0].comments;
+    status = Surveyor_list[0].reportStatus;
 
     super.initState();
   }
@@ -381,7 +383,12 @@ class _VerificationOutcomesWorkPlaceState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+       leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
+         title: const Text(
           "Verification Outcome",
         ),
       ),
@@ -407,7 +414,7 @@ class _VerificationOutcomesWorkPlaceState
                   height: 50,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    // color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: appColor),
                   ),
@@ -550,7 +557,7 @@ class _VerificationOutcomesWorkPlaceState
                         left: 10,
                         bottom: 40,
                         child: Container(
-                            color: Colors.white,
+                            color: Colors.grey.shade300,
                             child: Text(
                               'Comments',
                               style: TextStyle(color: appColor),
@@ -698,12 +705,16 @@ class _VerificationOutcomesWorkPlaceState
                         buildShowDialog(context);
                         Api.SendSorveyorResult(
                             widget.surid,
-                            _surveyorname.text,
+                            _surveyorname.text.isNotEmpty
+                                ? _surveyorname.text
+                                : Surveyor_list[0].surveyor,
                             status ?? Surveyor_list[0].reportStatus,
                             status == "Positive"
                                 ? dropdownvalue
                                 : dropdownvalue1,
-                            _remarks.text);
+                            _remarks.text.isNotEmpty
+                                ? _remarks.text
+                                : Surveyor_list[0].remarks);
                         waittosendData();
                         // showToastApp();
                         Navigator.pop(context);

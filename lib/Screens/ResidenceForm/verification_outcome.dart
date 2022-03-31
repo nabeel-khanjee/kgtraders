@@ -42,6 +42,7 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
     dropdownvalue1 = Surveyor_list[0].reportStatus == "Positive"
         ? negative[0]
         : Surveyor_list[0].comments;
+    status = Surveyor_list[0].reportStatus;
 
     super.initState();
   }
@@ -111,11 +112,16 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
             onPressed: () {
               buildShowDialog(context);
               Api.SendSorveyorResult(
-                  widget.surid,
-                  _surveyorname.text,
-                  status ?? Surveyor_list[0].reportStatus,
-                  status == "Positive" ? dropdownvalue : dropdownvalue1,
-                  _remarks.text);
+                widget.surid,
+                _surveyorname.text.isNotEmpty
+                    ? _surveyorname.text
+                    : Surveyor_list[0].surveyor,
+                status ?? Surveyor_list[0].reportStatus,
+                status == "Positive" ? dropdownvalue : dropdownvalue1,
+                _remarks.text.isNotEmpty
+                    ? _remarks.text
+                    : Surveyor_list[0].remarks,
+              );
               waittosendData();
               Navigator.pop(context);
             },
@@ -164,7 +170,7 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
                   height: 50,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    // color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: appColor),
                   ),
@@ -290,7 +296,7 @@ class _VerificationOutcomesState extends State<VerificationOutcomes> {
                         left: 10,
                         bottom: 40,
                         child: Container(
-                            color: Colors.white,
+                            color: Colors.grey.shade300,
                             child: Text(
                               'Comments',
                               style: TextStyle(color: appColor),

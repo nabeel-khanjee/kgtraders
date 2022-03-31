@@ -114,7 +114,12 @@ class _ResidenceProfileState extends State<ResidenceProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.applicationTitle),
-      ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
+    ),
       bottomNavigationBar: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

@@ -115,31 +115,22 @@ class _MyHomePageResidenceState extends State<MyHomePageResidence> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Survey'),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
       ),
-      bottomNavigationBar: ButtomNavBar(
-          widget: widget,
-          onTapSave: () async {
-            var res = await SubmitApi()
-                .submilData("/submitSurvey/${widget.surveyId}");
-            var body = jsonDecode(res.body);
-            if (body["success"]) {
-              showToastApp();
-              Navigator.pop(
-                context,
-              );
-            } else {
-              showToastAppFalse();
-            }
-          },
-          onTapBack: () {
-            Navigator.pop(
-              context,
-            );
-          }),
-      body: SingleChildScrollView(
+      body: Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                fit: BoxFit.fitHeight,
+                image:
+                    AssetImage('assets/istockphoto-1151170177-170667a.jpg'))),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 80.0),
+            padding: const EdgeInsets.only(top: 80.0),
             child: Column(
               children: <Widget>[
                 FormButton(
@@ -211,8 +202,8 @@ class _MyHomePageResidenceState extends State<MyHomePageResidence> {
                   },
                   iconData: Icons.verified,
                 ),
-             if (widget.formFormate == "1" || widget.formFormate == "2")
-                   const SizedBox(height: 20),
+                if (widget.formFormate == "1" || widget.formFormate == "2")
+                  const SizedBox(height: 20),
                 if (widget.formFormate == "1" || widget.formFormate == "2")
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -273,8 +264,9 @@ class _MyHomePageResidenceState extends State<MyHomePageResidence> {
                       )
                     ],
                   ),
-              if (widget.formFormate == "1" )
-               if(widget.isSalarySlip==1||widget.isHrDetails==1)   const SizedBox(height: 20),
+                if (widget.formFormate == "1")
+                  if (widget.isSalarySlip == 1 || widget.isHrDetails == 1)
+                    const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -320,12 +312,12 @@ class _MyHomePageResidenceState extends State<MyHomePageResidence> {
                           if (widget.formFormate == "3" ||
                               widget.formFormate == "4") {
                             return PhotoGraphs(
-                              formFormate: '0',
-                              surid: widget.surveyId);
+                                formFormate: '0', surid: widget.surveyId);
                           } else {
                             return PhotoGraphs(
                               formFormate: '1',
-                              surid: widget.surveyId,);
+                              surid: widget.surveyId,
+                            );
                           }
                         },
                       ),
@@ -343,6 +335,27 @@ class _MyHomePageResidenceState extends State<MyHomePageResidence> {
                   },
                   iconData: Icons.contact_page,
                 ),
+                Spacer(),
+                ButtomNavBar(
+                    widget: widget,
+                    onTapSave: () async {
+                      var res = await SubmitApi()
+                          .submilData("/submitSurvey/${widget.surveyId}");
+                      var body = jsonDecode(res.body);
+                      if (body["success"]) {
+                        showToastApp();
+                        Navigator.pop(
+                          context,
+                        );
+                      } else {
+                        showToastAppFalse();
+                      }
+                    },
+                    onTapBack: () {
+                      Navigator.pop(
+                        context,
+                      );
+                    })
               ],
             ),
           ),

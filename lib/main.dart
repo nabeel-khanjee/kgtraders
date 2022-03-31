@@ -13,14 +13,18 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       theme: ThemeData(appBarTheme: AppBarTheme(
+        
         elevation: 10,
         shadowColor: appColor,
         backgroundColor:appColor.withOpacity(.6) ,
         centerTitle: true,
+      
         shape: RoundedRectangleBorder(
           side: BorderSide(color: appColor)
         )
-      )),
+      ),
+      scaffoldBackgroundColor: Colors.grey.shade300
+      ),
       debugShowCheckedModeBanner: false,
       home: userName==null
           ? LoginScreen()

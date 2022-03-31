@@ -373,6 +373,11 @@ class _SalaryDetailsState extends State<SalaryDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
         title: Text("Salary Slip Details"),
       ),
       body: SingleChildScrollView(

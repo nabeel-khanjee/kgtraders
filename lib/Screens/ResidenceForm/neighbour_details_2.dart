@@ -36,7 +36,12 @@ class _NeighbourDetails2State extends State<NeighbourDetails2> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.apptitle),
-      ),
+         leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
+     ),
       bottomNavigationBar: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
